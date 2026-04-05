@@ -1,4 +1,15 @@
 import { motion } from 'framer-motion';
+import { 
+  Filter, 
+  Shield, 
+  CloudRain, 
+  TrendingUp, 
+  CreditCard, 
+  Building2,
+  ChevronRight,
+  Wallet,
+  Award
+} from 'lucide-react';
 
 export default function Sidebar({ setSelectedCrop, setSelectedRegion }) {
   return (
@@ -8,9 +19,13 @@ export default function Sidebar({ setSelectedCrop, setSelectedRegion }) {
       transition={{ delay: 0.3 }}
       className="space-y-6"
     >
-      {/* Filtres */}
+      {/* Filtres - avec icône professionnelle */}
       <div className="bg-white dark:bg-gray-800 rounded-xl shadow-md p-4">
-        <h3 className="font-bold text-green-800 dark:text-green-400 mb-3">🔍 Filtres</h3>
+        <div className="flex items-center gap-2 mb-4">
+          <Filter className="w-5 h-5 text-green-600 dark:text-green-400" />
+          <h3 className="font-bold text-gray-900 dark:text-white">Filtres</h3>
+        </div>
+        
         <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Culture</label>
         <select 
           onChange={(e) => setSelectedCrop(e.target.value)} 
@@ -36,13 +51,16 @@ export default function Sidebar({ setSelectedCrop, setSelectedRegion }) {
         </select>
       </div>
 
-      {/* Escrow */}
+      {/* Escrow sécurisé */}
       <motion.div 
         whileHover={{ x: 5 }}
         className="bg-white dark:bg-gray-800 rounded-xl shadow-md p-4 border-l-4 border-green-500"
       >
-        <h3 className="font-bold text-green-800 dark:text-green-400">💰 Escrow sécurisé</h3>
-        <p className="text-sm text-gray-600 dark:text-gray-300 mt-1">
+        <div className="flex items-center gap-2 mb-2">
+          <Shield className="w-5 h-5 text-green-600 dark:text-green-400" />
+          <h3 className="font-bold text-gray-900 dark:text-white">Escrow sécurisé</h3>
+        </div>
+        <p className="text-sm text-gray-600 dark:text-gray-300">
           Acompte bloqué KKiaPay<br />
           Libéré à livraison terrain
         </p>
@@ -53,18 +71,24 @@ export default function Sidebar({ setSelectedCrop, setSelectedRegion }) {
         whileHover={{ scale: 1.02 }}
         className="bg-white dark:bg-gray-800 rounded-xl shadow-md p-4"
       >
-        <h3 className="font-bold text-green-800 dark:text-green-400">🌦️ Prédiction IA (Open-Meteo)</h3>
-        <p className="text-sm text-gray-600 dark:text-gray-300 mt-1">
+        <div className="flex items-center gap-2 mb-2">
+          <CloudRain className="w-5 h-5 text-blue-600 dark:text-blue-400" />
+          <h3 className="font-bold text-gray-900 dark:text-white">Prédiction IA (Open-Meteo)</h3>
+        </div>
+        <p className="text-sm text-gray-600 dark:text-gray-300">
           Rendement estimé maïs : 2.4 t/ha<br />
           Risque pluie : faible<br />
           Température moyenne : 28°C
         </p>
       </motion.div>
 
-      {/* Score confiance */}
+      {/* Score de confiance */}
       <div className="bg-white dark:bg-gray-800 rounded-xl shadow-md p-4">
-        <h3 className="font-bold text-green-800 dark:text-green-400">📊 Score de confiance</h3>
-        <p className="text-sm text-gray-600 dark:text-gray-300 mt-1">
+        <div className="flex items-center gap-2 mb-2">
+          <Award className="w-5 h-5 text-yellow-600 dark:text-yellow-400" />
+          <h3 className="font-bold text-gray-900 dark:text-white">Score de confiance</h3>
+        </div>
+        <p className="text-sm text-gray-600 dark:text-gray-300">
           Agriculteur moyen : 4.7/5<br />
           Basé sur 120 livraisons<br />
           🔒 Vérifié par agent terrain
@@ -76,15 +100,18 @@ export default function Sidebar({ setSelectedCrop, setSelectedRegion }) {
         whileHover={{ y: -5 }}
         className="bg-white dark:bg-gray-800 rounded-xl shadow-md p-4 border-t-4 border-yellow-500"
       >
-        <h3 className="font-bold text-green-800 dark:text-green-400">💳 Micro-crédit disponible</h3>
-        <p className="text-sm text-gray-600 dark:text-gray-300 mt-1 mb-3">
+        <div className="flex items-center gap-2 mb-2">
+          <CreditCard className="w-5 h-5 text-yellow-600 dark:text-yellow-400" />
+          <h3 className="font-bold text-gray-900 dark:text-white">Micro-crédit disponible</h3>
+        </div>
+        <p className="text-sm text-gray-600 dark:text-gray-300 mb-3">
           Sur contrat signé – avance jusqu'à 500 000 FCFA<br />
           Taux : 5-8% remboursable à livraison
         </p>
         <motion.button 
           whileHover={{ scale: 1.05 }}
           whileTap={{ scale: 0.95 }}
-          className="w-full bg-yellow-500 text-green-900 py-2 rounded-lg font-semibold hover:bg-yellow-400 transition"
+          className="w-full bg-gradient-to-r from-yellow-500 to-amber-500 text-green-900 py-2 rounded-lg font-semibold hover:from-yellow-600 hover:to-amber-600 transition"
         >
           Demander une avance →
         </motion.button>
@@ -92,9 +119,12 @@ export default function Sidebar({ setSelectedCrop, setSelectedRegion }) {
 
       {/* Partenaires */}
       <div className="bg-white dark:bg-gray-800 rounded-xl shadow-md p-4">
-        <h3 className="font-bold text-green-800 dark:text-green-400">🤝 Partenaires</h3>
+        <div className="flex items-center gap-2 mb-2">
+          <Building2 className="w-5 h-5 text-gray-600 dark:text-gray-400" />
+          <h3 className="font-bold text-gray-900 dark:text-white">Partenaires</h3>
+        </div>
         <div className="flex gap-3 mt-2 text-xs text-gray-500 dark:text-gray-400">
-          <span>MTN MoMo</span>
+          <span className="flex items-center gap-1"><Wallet className="w-3 h-3" /> MTN MoMo</span>
           <span>•</span>
           <span>Moov</span>
           <span>•</span>

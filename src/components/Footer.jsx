@@ -1,70 +1,172 @@
+import { motion } from 'framer-motion';
+import { 
+  Sprout, 
+  Phone, 
+  Mail, 
+  MapPin, 
+  CreditCard,
+  Smartphone,
+  Shield,
+  ChevronRight,
+  Clock,
+  Heart
+} from 'lucide-react';
+
 export default function Footer() {
   const currentYear = new Date().getFullYear();
 
+  const footerLinks = {
+    platforme: [
+      { name: 'Dashboard', href: '#' },
+      { name: 'Explorer les offres', href: '#' },
+      { name: 'Comment ça marche', href: '#' },
+      { name: 'Devenir agriculteur', href: '#' },
+      { name: 'Devenir acheteur', href: '#' },
+    ],
+    ressources: [
+      { name: 'FAQ', href: '#' },
+      { name: 'Centre d\'aide', href: '#' },
+      { name: 'Blog agricole', href: '#' },
+      { name: 'Témoignages', href: '#' },
+      { name: 'Devenir agent terrain', href: '#' },
+    ],
+    legal: [
+      { name: 'Mentions légales', href: '#' },
+      { name: 'Confidentialité', href: '#' },
+      { name: 'CGU', href: '#' },
+      { name: 'Cookies', href: '#' },
+    ]
+  };
+
   return (
-    <footer className="bg-green-900 dark:bg-gray-950 text-white mt-16 transition-colors">
-      <div className="max-w-7xl mx-auto px-4 py-12">
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
+    <footer className="bg-gray-900 dark:bg-gray-950 text-gray-300 mt-16">
+      {/* Newsletter Section */}
+      <div className="border-b border-gray-800">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+          <div className="flex flex-col md:flex-row justify-between items-center gap-4">
+            <div className="text-center md:text-left">
+              <h3 className="text-lg font-semibold text-white">Restez informé</h3>
+              <p className="text-sm text-gray-400">Recevez les nouvelles offres et actualités</p>
+            </div>
+            <div className="flex gap-2 w-full md:w-auto">
+              <input 
+                type="email" 
+                placeholder="Votre email"
+                className="flex-1 md:w-64 px-4 py-2 bg-gray-800 border border-gray-700 rounded-lg text-white placeholder-gray-500 focus:outline-none focus:border-green-500"
+              />
+              <button className="px-4 py-2 bg-gradient-to-r from-green-600 to-emerald-600 text-white rounded-lg font-medium hover:from-green-700 hover:to-emerald-700 transition shadow-lg">
+                S'abonner
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-8">
           
           {/* Colonne 1 - Logo & Description */}
-          <div>
-            <div className="text-2xl font-bold mb-3">🌱 AgroTrust</div>
-            <p className="text-green-200 dark:text-green-300 text-sm">
-              La Bourse Agricole Communautaire de l'Afrique de l'Ouest.
-              Connecter les agriculteurs aux acheteurs vérifiés.
+          <div className="lg:col-span-2">
+            <div className="flex items-center gap-2 mb-4">
+              <div className="w-10 h-10 bg-gradient-to-br from-green-500 to-emerald-600 rounded-xl flex items-center justify-center">
+                <Sprout className="w-6 h-6 text-white" />
+              </div>
+              <span className="text-xl font-bold text-white">AgroTrust</span>
+            </div>
+            <p className="text-sm text-gray-400 mb-4 leading-relaxed">
+              La Bourse Agricole Communautaire de l'Afrique de l'Ouest. 
+              Connecter les agriculteurs aux acheteurs vérifiés pour une 
+              agriculture plus juste et durable.
             </p>
+            
+            {/* Contact Info */}
+            <div className="space-y-2">
+              <div className="flex items-center gap-2 text-sm text-gray-400">
+                <Phone className="w-4 h-4 text-green-500" />
+                <span>+229 01 23 45 67</span>
+              </div>
+              <div className="flex items-center gap-2 text-sm text-gray-400">
+                <Mail className="w-4 h-4 text-green-500" />
+                <span>contact@agrotrust.com</span>
+              </div>
+              <div className="flex items-center gap-2 text-sm text-gray-400">
+                <MapPin className="w-4 h-4 text-green-500" />
+                <span>Cotonou, Bénin</span>
+              </div>
+              <div className="flex items-center gap-2 text-sm text-gray-400">
+                <Clock className="w-4 h-4 text-green-500" />
+                <span>Lun - Ven: 8h - 18h</span>
+              </div>
+            </div>
           </div>
 
-          {/* Colonne 2 - Liens rapides */}
+          {/* Colonne 2 - Plateforme */}
           <div>
-            <h3 className="font-semibold text-lg mb-3">Liens rapides</h3>
-            <ul className="space-y-2 text-sm text-green-200 dark:text-green-300">
-              <li><a href="#" className="hover:text-white transition">Accueil</a></li>
-              <li><a href="#" className="hover:text-white transition">Explorer les offres</a></li>
-              <li><a href="#" className="hover:text-white transition">Comment ça marche</a></li>
-              <li><a href="#" className="hover:text-white transition">Devenir agriculteur</a></li>
-              <li><a href="#" className="hover:text-white transition">Devenir acheteur</a></li>
+            <h3 className="font-semibold text-white mb-4">Plateforme</h3>
+            <ul className="space-y-2">
+              {footerLinks.platforme.map((link) => (
+                <li key={link.name}>
+                  <a href={link.href} className="text-sm text-gray-400 hover:text-green-400 transition flex items-center gap-1 group">
+                    <ChevronRight className="w-3 h-3 opacity-0 group-hover:opacity-100 transition" />
+                    {link.name}
+                  </a>
+                </li>
+              ))}
             </ul>
           </div>
 
           {/* Colonne 3 - Ressources */}
           <div>
-            <h3 className="font-semibold text-lg mb-3">Ressources</h3>
-            <ul className="space-y-2 text-sm text-green-200 dark:text-green-300">
-              <li><a href="#" className="hover:text-white transition">FAQ</a></li>
-              <li><a href="#" className="hover:text-white transition">Centre d'aide</a></li>
-              <li><a href="#" className="hover:text-white transition">Blog agricole</a></li>
-              <li><a href="#" className="hover:text-white transition">Témoignages</a></li>
-              <li><a href="#" className="hover:text-white transition">Devenir agent terrain</a></li>
+            <h3 className="font-semibold text-white mb-4">Ressources</h3>
+            <ul className="space-y-2">
+              {footerLinks.ressources.map((link) => (
+                <li key={link.name}>
+                  <a href={link.href} className="text-sm text-gray-400 hover:text-green-400 transition flex items-center gap-1 group">
+                    <ChevronRight className="w-3 h-3 opacity-0 group-hover:opacity-100 transition" />
+                    {link.name}
+                  </a>
+                </li>
+              ))}
             </ul>
           </div>
 
-          {/* Colonne 4 - Contact & Mobile Money */}
+          {/* Colonne 4 - Légal & Partenaires */}
           <div>
-            <h3 className="font-semibold text-lg mb-3">Contact</h3>
-            <ul className="space-y-2 text-sm text-green-200 dark:text-green-300">
-              <li>📞 +229 01 23 45 67</li>
-              <li>✉️ contact@agrotrust.com</li>
-              <li>📍 Cotonou, Bénin</li>
+            <h3 className="font-semibold text-white mb-4">Légal</h3>
+            <ul className="space-y-2 mb-6">
+              {footerLinks.legal.map((link) => (
+                <li key={link.name}>
+                  <a href={link.href} className="text-sm text-gray-400 hover:text-green-400 transition flex items-center gap-1 group">
+                    <ChevronRight className="w-3 h-3 opacity-0 group-hover:opacity-100 transition" />
+                    {link.name}
+                  </a>
+                </li>
+              ))}
             </ul>
-            <div className="mt-4">
-              <p className="text-sm font-semibold mb-2">Paiement sécurisé via :</p>
-              <div className="flex gap-3 text-sm">
-                <span className="bg-green-800 dark:bg-green-900 px-2 py-1 rounded">MTN MoMo</span>
-                <span className="bg-green-800 dark:bg-green-900 px-2 py-1 rounded">Moov</span>
-                <span className="bg-green-800 dark:bg-green-900 px-2 py-1 rounded">Orange Money</span>
-              </div>
+
+            {/* Partenaires paiement */}
+            <h3 className="font-semibold text-white mb-3">Paiement sécurisé</h3>
+            <div className="flex flex-wrap gap-2">
+              <span className="inline-flex items-center gap-1 text-xs bg-gray-800 px-2 py-1 rounded-lg text-gray-300">
+                <CreditCard className="w-3 h-3" /> MTN MoMo
+              </span>
+              <span className="inline-flex items-center gap-1 text-xs bg-gray-800 px-2 py-1 rounded-lg text-gray-300">
+                <Smartphone className="w-3 h-3" /> Moov
+              </span>
+              <span className="inline-flex items-center gap-1 text-xs bg-gray-800 px-2 py-1 rounded-lg text-gray-300">
+                <Shield className="w-3 h-3" /> Orange Money
+              </span>
             </div>
           </div>
         </div>
 
-        {/* Ligne de séparation */}
-        <div className="border-t border-green-800 dark:border-green-900 mt-8 pt-6 text-center text-sm text-green-300">
-          <p>&copy; {currentYear} AgroTrust – Tous droits réservés</p>
-          <p className="mt-1">
-            <a href="#" className="hover:text-white transition">Mentions légales</a> | 
-            <a href="#" className="hover:text-white transition ml-2">Confidentialité</a> | 
-            <a href="#" className="hover:text-white transition ml-2">CGU</a>
+        {/* Bas du footer - Copyright */}
+        <div className="border-t border-gray-800 mt-10 pt-8 text-center">
+          <p className="text-sm text-gray-400">
+            &copy; {currentYear} AgroTrust – Tous droits réservés
+          </p>
+          <p className="text-xs text-gray-500 mt-2 flex items-center justify-center gap-1">
+            Fait avec <Heart className="w-3 h-3 text-red-500" /> au Bénin
           </p>
         </div>
       </div>
