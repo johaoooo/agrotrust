@@ -7,20 +7,21 @@ export function AuthProvider({ children }) {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    // Récupérer l'utilisateur du localStorage au chargement
     const token = localStorage.getItem('access_token');
     const savedUser = localStorage.getItem('user');
     
-    console.log('AuthContext chargé - token:', !!token, 'user:', savedUser);
-    
     if (token && savedUser) {
-      setUser(JSON.parse(savedUser));
+      try {
+        const userData = JSON.parse(savedUser);
+        setUser(userData);
+      } catch (e) {
+        console.error('Erreur parsing user:', e);
+      }
     }
     setLoading(false);
   }, []);
 
   const login = (userData, tokens) => {
-    console.log('Login appelé', userData);
     localStorage.setItem('access_token', tokens.access);
     localStorage.setItem('refresh_token', tokens.refresh);
     localStorage.setItem('user', JSON.stringify(userData));
@@ -28,7 +29,6 @@ export function AuthProvider({ children }) {
   };
 
   const logout = () => {
-    console.log('Logout appelé');
     localStorage.removeItem('access_token');
     localStorage.removeItem('refresh_token');
     localStorage.removeItem('user');

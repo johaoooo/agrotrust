@@ -1,9 +1,7 @@
 const API_URL = 'http://localhost:8000/api';
 
-// Récupérer le token du localStorage
 const getToken = () => localStorage.getItem('access_token');
 
-// Headers par défaut
 const getHeaders = () => {
   const headers = {
     'Content-Type': 'application/json',
@@ -15,7 +13,6 @@ const getHeaders = () => {
   return headers;
 };
 
-// Requête générique
 const request = async (endpoint, options = {}) => {
   const response = await fetch(`${API_URL}${endpoint}`, {
     ...options,
@@ -23,7 +20,7 @@ const request = async (endpoint, options = {}) => {
   });
   
   if (!response.ok) {
-    const error = await response.json();
+    const error = await response.json().catch(() => ({ error: 'Erreur serveur' }));
     throw new Error(error.error || 'Une erreur est survenue');
   }
   
@@ -36,14 +33,11 @@ export const authAPI = {
     method: 'POST',
     body: JSON.stringify(userData),
   }),
-  
   login: (credentials) => request('/auth/login/', {
     method: 'POST',
     body: JSON.stringify(credentials),
   }),
-  
   getProfile: () => request('/auth/profile/'),
-  
   updateProfile: (data) => request('/auth/profile/', {
     method: 'PUT',
     body: JSON.stringify(data),
@@ -58,16 +52,30 @@ export const produitsAPI = {
     method: 'POST',
     body: JSON.stringify(data),
   }),
-  update: (id, data) => request(`/produits/${id}/`, {
-    method: 'PUT',
+};
+
+// API Commandes
+export const commandesAPI = {
+  getAll: () => request('/commandes/'),
+  getById: (id) => request(`/commandes/${id}/`),
+  create: (data) => request('/commandes/creer/', {
+    method: 'POST',
     body: JSON.stringify(data),
   }),
-  delete: (id) => request(`/produits/${id}/`, {
-    method: 'DELETE',
+  confirmer: (commandeId) => request(`/commandes/${commandeId}/confirmer/`, {
+    method: 'POST',
+  }),
+  annuler: (commandeId) => request(`/commandes/${commandeId}/annuler/`, {
+    method: 'POST',
+  }),
+  getNotifications: () => request('/commandes/notifications/'),
+  marquerNotificationLue: (notificationId) => request(`/commandes/notifications/${notificationId}/lue/`, {
+    method: 'POST',
   }),
 };
 
 export default {
   auth: authAPI,
   produits: produitsAPI,
+  commandes: commandesAPI,
 };

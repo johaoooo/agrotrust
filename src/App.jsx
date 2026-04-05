@@ -8,6 +8,8 @@ import Dashboard from './pages/Dashboard';
 import Offres from './pages/Offres';
 import Contrats from './pages/Contrats';
 import MonCompte from './pages/MonCompte';
+import MesCommandes from './pages/MesCommandes';
+import Parametres from './pages/Parametres';
 import Login from './pages/auth/Login';
 import Register from './pages/auth/Register';
 import PrivateRoute from './components/PrivateRoute';
@@ -25,21 +27,11 @@ function App() {
                 <Route path="/login" element={<Login />} />
                 <Route path="/register" element={<Register />} />
                 <Route path="/offres" element={<Offres />} />
-                <Route path="/dashboard" element={
-                  <PrivateRoute>
-                    <Dashboard />
-                  </PrivateRoute>
-                } />
-                <Route path="/contrats" element={
-                  <PrivateRoute>
-                    <Contrats />
-                  </PrivateRoute>
-                } />
-                <Route path="/mon-compte" element={
-                  <PrivateRoute>
-                    <MonCompte />
-                  </PrivateRoute>
-                } />
+                <Route path="/dashboard" element={<PrivateRoute><Dashboard /></PrivateRoute>} />
+                <Route path="/contrats" element={<PrivateRoute><Contrats /></PrivateRoute>} />
+                <Route path="/mon-compte" element={<PrivateRoute><MonCompte /></PrivateRoute>} />
+                <Route path="/mes-commandes" element={<PrivateRoute><MesCommandes /></PrivateRoute>} />
+                <Route path="/parametres" element={<PrivateRoute><Parametres /></PrivateRoute>} />
               </Routes>
             </main>
             <Footer />

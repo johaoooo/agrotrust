@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import { 
@@ -12,23 +12,111 @@ import {
   LogOut,
   Settings,
   HelpCircle,
-  LogIn
+  LogIn,
+  Package,
+  CheckCircle,
+  Clock,
+  Truck,
+  XCircle
 } from 'lucide-react';
 import DarkModeToggle from './DarkModeToggle';
 import { useAuth } from '../context/AuthContext';
+import { commandesAPI } from '../services/api';
 
 export default function Navbar() {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [isUserMenuOpen, setIsUserMenuOpen] = useState(false);
+  const [isNotificationsOpen, setIsNotificationsOpen] = useState(false);
+  const [notifications, setNotifications] = useState([]);
+  const [unreadCount, setUnreadCount] = useState(0);
+  const notificationRef = useRef(null);
   const location = useLocation();
   const navigate = useNavigate();
   const { user, logout, isAuthenticated } = useAuth();
 
+  // Charger les notifications
+  useEffect(() => {
+    if (isAuthenticated) {
+      fetchNotifications();
+      // Rafraîchir toutes les 30 secondes
+      const interval = setInterval(fetchNotifications, 30000);
+      return () => clearInterval(interval);
+    }
+  }, [isAuthenticated]);
+
+  // Fermer le dropdown au clic en dehors
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (notificationRef.current && !notificationRef.current.contains(event.target)) {
+        setIsNotificationsOpen(false);
+      }
+    };
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => document.removeEventListener('mousedown', handleClickOutside);
+  }, []);
+
+  const fetchNotifications = async () => {
+    try {
+      const data = await commandesAPI.getNotifications();
+      setNotifications(data);
+      setUnreadCount(data.filter(n => !n.est_lu).length);
+    } catch (err) {
+      console.error('Erreur chargement notifications:', err);
+    }
+  };
+
+  const markAsRead = async (notificationId) => {
+    try {
+      await commandesAPI.marquerNotificationLue(notificationId);
+      setNotifications(notifications.map(n => 
+        n.id === notificationId ? { ...n, est_lu: true } : n
+      ));
+      setUnreadCount(prev => Math.max(0, prev - 1));
+    } catch (err) {
+      console.error('Erreur:', err);
+    }
+  };
+
+  const markAllAsRead = async () => {
+    const unreadNotifications = notifications.filter(n => !n.est_lu);
+    for (const notif of unreadNotifications) {
+      await commandesAPI.marquerNotificationLue(notif.id);
+    }
+    setNotifications(notifications.map(n => ({ ...n, est_lu: true })));
+    setUnreadCount(0);
+  };
+
+  const getNotificationIcon = (type) => {
+    const icons = {
+      commande_nouvelle: Package,
+      commande_confirmee: CheckCircle,
+      commande_payee: CheckCircle,
+      commande_livree: Truck,
+      commande_annulee: XCircle,
+      paiement_recu: CheckCircle,
+      livraison_prevue: Clock,
+    };
+    const Icon = icons[type] || Bell;
+    return <Icon className="w-4 h-4" />;
+  };
+
+  const getNotificationColor = (type) => {
+    const colors = {
+      commande_nouvelle: 'text-blue-500',
+      commande_confirmee: 'text-green-500',
+      commande_payee: 'text-purple-500',
+      commande_livree: 'text-emerald-500',
+      commande_annulee: 'text-red-500',
+    };
+    return colors[type] || 'text-gray-500';
+  };
+
   const navLinks = [
-    { name: 'Dashboard', href: '/dashboard', icon: LayoutDashboard },
-    { name: 'Offres', href: '/offres', icon: Sprout },
-    { name: 'Contrats', href: '/contrats', icon: FileText },
-    { name: 'Mon Compte', href: '/mon-compte', icon: User },
+    { name: 'Dashboard', href: '/dashboard', icon: LayoutDashboard, color: 'text-emerald-500' },
+    { name: 'Offres', href: '/offres', icon: Sprout, color: 'text-green-500' },
+    { name: 'Contrats', href: '/contrats', icon: FileText, color: 'text-blue-500' },
+    { name: 'Mes commandes', href: '/mes-commandes', icon: Package, color: 'text-indigo-500' },
+    { name: 'Mon Compte', href: '/mon-compte', icon: User, color: 'text-purple-500' },
   ];
 
   const isActive = (path) => {
@@ -43,10 +131,23 @@ export default function Navbar() {
   };
 
   const getInitials = () => {
+    if (user && user.username) {
+      return user.username.slice(0, 2).toUpperCase();
+    }
     if (user && user.name) {
-      return user.name.split(' ').map(n => n[0]).join('').toUpperCase().slice(0, 2);
+      return user.name.slice(0, 2).toUpperCase();
     }
     return 'U';
+  };
+
+  const getDisplayName = () => {
+    if (user && user.username) {
+      return user.username;
+    }
+    if (user && user.name) {
+      return user.name.split(' ')[0];
+    }
+    return 'Compte';
   };
 
   return (
@@ -59,7 +160,6 @@ export default function Navbar() {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between items-center h-16 md:h-20">
           
-          {/* Logo */}
           <Link to="/" className="flex items-center space-x-3 cursor-pointer group">
             <div className="relative">
               <div className="w-10 h-10 bg-gradient-to-br from-emerald-500 to-green-700 rounded-xl rotate-45 group-hover:rotate-90 transition-transform duration-300 shadow-md"></div>
@@ -74,7 +174,6 @@ export default function Navbar() {
             </div>
           </Link>
 
-          {/* Liens de navigation - Desktop - Style pro sans surlignage */}
           <div className="hidden md:flex items-center space-x-1">
             {navLinks.map((link) => {
               const Icon = link.icon;
@@ -91,8 +190,6 @@ export default function Navbar() {
                 >
                   <Icon className={`w-4 h-4 transition-transform ${active ? 'scale-110' : 'group-hover:scale-110'}`} />
                   <span className={active ? 'font-semibold' : ''}>{link.name}</span>
-                  
-                  {/* Indicateur discret - un point vert sous l'icône */}
                   {active && (
                     <motion.div
                       layoutId="activeDot"
@@ -105,13 +202,84 @@ export default function Navbar() {
             })}
           </div>
 
-          {/* Actions à droite */}
           <div className="flex items-center gap-2">
+            {/* Notifications */}
             {isAuthenticated && (
-              <motion.button whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }} className="relative p-2 text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-200 rounded-full transition">
-                <Bell className="w-5 h-5" />
-                <span className="absolute top-1 right-1 w-2 h-2 bg-red-500 rounded-full ring-2 ring-white dark:ring-gray-900"></span>
-              </motion.button>
+              <div className="relative" ref={notificationRef}>
+                <motion.button
+                  whileHover={{ scale: 1.05 }}
+                  whileTap={{ scale: 0.95 }}
+                  onClick={() => setIsNotificationsOpen(!isNotificationsOpen)}
+                  className="relative p-2 text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-200 rounded-full transition"
+                >
+                  <Bell className="w-5 h-5" />
+                  {unreadCount > 0 && (
+                    <span className="absolute -top-1 -right-1 w-5 h-5 bg-red-500 text-white text-xs font-bold rounded-full flex items-center justify-center">
+                      {unreadCount > 9 ? '9+' : unreadCount}
+                    </span>
+                  )}
+                </motion.button>
+
+                <AnimatePresence>
+                  {isNotificationsOpen && (
+                    <motion.div
+                      initial={{ opacity: 0, y: -10, scale: 0.95 }}
+                      animate={{ opacity: 1, y: 0, scale: 1 }}
+                      exit={{ opacity: 0, y: -10, scale: 0.95 }}
+                      className="absolute right-0 mt-2 w-80 bg-white dark:bg-gray-800 rounded-xl shadow-lg border border-gray-200 dark:border-gray-700 overflow-hidden z-50"
+                    >
+                      <div className="p-3 border-b border-gray-200 dark:border-gray-700 flex justify-between items-center">
+                        <h3 className="font-semibold text-gray-900 dark:text-white">Notifications</h3>
+                        {unreadCount > 0 && (
+                          <button onClick={markAllAsRead} className="text-xs text-green-600 hover:text-green-700">
+                            Tout marquer comme lu
+                          </button>
+                        )}
+                      </div>
+                      <div className="max-h-96 overflow-y-auto">
+                        {notifications.length === 0 ? (
+                          <div className="p-8 text-center text-gray-500">
+                            <Bell className="w-8 h-8 mx-auto mb-2 text-gray-400" />
+                            <p className="text-sm">Aucune notification</p>
+                          </div>
+                        ) : (
+                          notifications.map((notif) => {
+                            const Icon = getNotificationIcon(notif.type);
+                            const iconColor = getNotificationColor(notif.type);
+                            return (
+                              <div 
+                                key={notif.id} 
+                                className={`p-3 border-b border-gray-100 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-700/50 transition cursor-pointer ${!notif.est_lu ? 'bg-green-50 dark:bg-green-900/20' : ''}`}
+                                onClick={() => {
+                                  if (!notif.est_lu) markAsRead(notif.id);
+                                  if (notif.lien) navigate(notif.lien);
+                                  setIsNotificationsOpen(false);
+                                }}
+                              >
+                                <div className="flex gap-3">
+                                  <div className={`flex-shrink-0 ${iconColor}`}>
+                                    <Icon />
+                                  </div>
+                                  <div className="flex-1">
+                                    <p className="text-sm font-medium text-gray-900 dark:text-white">{notif.titre}</p>
+                                    <p className="text-xs text-gray-500 dark:text-gray-400 mt-0.5">{notif.message}</p>
+                                    <p className="text-[10px] text-gray-400 mt-1">
+                                      {new Date(notif.created_at).toLocaleString('fr-FR')}
+                                    </p>
+                                  </div>
+                                  {!notif.est_lu && (
+                                    <div className="w-2 h-2 bg-green-500 rounded-full mt-2"></div>
+                                  )}
+                                </div>
+                              </div>
+                            );
+                          })
+                        )}
+                      </div>
+                    </motion.div>
+                  )}
+                </AnimatePresence>
+              </div>
             )}
 
             <DarkModeToggle />
@@ -128,7 +296,7 @@ export default function Navbar() {
                     <span className="text-white text-sm font-bold">{getInitials()}</span>
                   </div>
                   <span className="hidden lg:block text-sm font-medium text-gray-700 dark:text-gray-200">
-                    {user?.name?.split(' ')[0] || 'Compte'}
+                    {getDisplayName()}
                   </span>
                 </motion.button>
 
@@ -142,12 +310,15 @@ export default function Navbar() {
                     >
                       <div className="p-2">
                         <div className="px-3 py-2 border-b border-gray-100 dark:border-gray-700 mb-2">
-                          <p className="text-sm font-medium text-gray-900 dark:text-white">{user?.name}</p>
+                          <p className="text-sm font-medium text-gray-900 dark:text-white">{user?.username || user?.name}</p>
                           <p className="text-xs text-gray-500 dark:text-gray-400">{user?.email}</p>
                           <p className="text-xs text-green-600 dark:text-green-400 mt-1 capitalize">{user?.role}</p>
                         </div>
                         <Link to="/mon-compte" onClick={() => setIsUserMenuOpen(false)} className="flex items-center gap-3 px-3 py-2 text-sm text-gray-700 dark:text-gray-200 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-700 transition">
                           <User className="w-4 h-4" /> Mon profil
+                        </Link>
+                        <Link to="/mes-commandes" onClick={() => setIsUserMenuOpen(false)} className="flex items-center gap-3 px-3 py-2 text-sm text-gray-700 dark:text-gray-200 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-700 transition">
+                          <Package className="w-4 h-4" /> Mes commandes
                         </Link>
                         <Link to="/parametres" onClick={() => setIsUserMenuOpen(false)} className="flex items-center gap-3 px-3 py-2 text-sm text-gray-700 dark:text-gray-200 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-700 transition">
                           <Settings className="w-4 h-4" /> Paramètres
@@ -184,7 +355,6 @@ export default function Navbar() {
         </div>
       </div>
 
-      {/* Menu mobile */}
       <AnimatePresence>
         {isMobileMenuOpen && (
           <motion.div initial={{ opacity: 0, height: 0 }} animate={{ opacity: 1, height: "auto" }} exit={{ opacity: 0, height: 0 }} className="md:hidden bg-white dark:bg-gray-900 border-t border-gray-100 dark:border-gray-800">
