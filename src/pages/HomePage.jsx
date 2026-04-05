@@ -2,12 +2,12 @@ import { useState } from 'react';
 import { motion } from 'framer-motion';
 import Hero from '../components/Hero';
 import ValueCards from '../components/ValueCards';
+import MapSection from '../components/MapSection';
+import Sidebar from '../components/Sidebar';
+import OffersList from '../components/OffersList';
 import StatsSection from '../components/StatsSection';
 import HowItWorks from '../components/HowItWorks';
 import Testimonials from '../components/Testimonials';
-import MapSection from '../components/MapSection';
-import OffersList from '../components/OffersList';
-import Sidebar from '../components/Sidebar';
 import AnimatedSection from '../components/AnimatedSection';
 
 export default function HomePage() {
@@ -26,27 +26,41 @@ export default function HomePage() {
         <ValueCards />
       </AnimatedSection>
       
-      <StatsSection />
-      <HowItWorks />
-      <Testimonials />
-      
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
+      {/* Section Carte + Sidebar horizontale */}
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         <div className="flex flex-col lg:flex-row gap-6">
-          <div className="lg:w-2/3 space-y-6">
+          {/* Carte - 2/3 */}
+          <div className="lg:w-2/3">
             <AnimatedSection direction="left" delay={0.2}>
               <MapSection />
             </AnimatedSection>
-            <AnimatedSection direction="left" delay={0.3}>
-              <OffersList selectedCrop={selectedCrop} selectedRegion={selectedRegion} />
-            </AnimatedSection>
           </div>
+          
+          {/* Sidebar horizontale - 1/3 */}
           <div className="lg:w-1/3">
             <AnimatedSection direction="right" delay={0.2}>
-              <Sidebar setSelectedCrop={setSelectedCrop} setSelectedRegion={setSelectedRegion} />
+              <Sidebar 
+                setSelectedCrop={setSelectedCrop} 
+                setSelectedRegion={setSelectedRegion} 
+              />
             </AnimatedSection>
           </div>
         </div>
       </div>
+      
+      {/* Offres de récoltes futures */}
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pb-8">
+        <AnimatedSection direction="up" delay={0.3}>
+          <OffersList 
+            selectedCrop={selectedCrop}
+            selectedRegion={selectedRegion}
+          />
+        </AnimatedSection>
+      </div>
+      
+      <StatsSection />
+      <HowItWorks />
+      <Testimonials />
     </motion.div>
   );
 }

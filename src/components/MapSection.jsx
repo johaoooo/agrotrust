@@ -1,7 +1,7 @@
 import { MapContainer, TileLayer, Marker, Popup } from 'react-leaflet';
 import 'leaflet/dist/leaflet.css';
 import L from 'leaflet';
-import { MapPin } from 'lucide-react';
+import { MapPin, Maximize2 } from 'lucide-react';
 
 // Configuration des icônes Leaflet
 delete L.Icon.Default.prototype._getIconUrl;
@@ -19,14 +19,17 @@ export default function MapSection() {
   ];
 
   return (
-    <div className="bg-white dark:bg-gray-800 rounded-xl shadow-md p-4">
-      <div className="flex items-center gap-2 mb-3">
-        <MapPin className="w-5 h-5 text-green-600 dark:text-green-400" />
-        <h2 className="text-xl font-bold text-green-800 dark:text-green-400">
-          Récoltes disponibles par zone
-        </h2>
+    <div className="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700 overflow-hidden">
+      <div className="flex items-center justify-between p-4 border-b border-gray-200 dark:border-gray-700">
+        <div className="flex items-center gap-2">
+          <MapPin className="w-5 h-5 text-green-600 dark:text-green-400" />
+          <h2 className="font-semibold text-gray-900 dark:text-white">Récoltes disponibles par zone</h2>
+        </div>
+        <button className="p-1.5 text-gray-400 hover:text-gray-600 dark:hover:text-gray-300 transition rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700">
+          <Maximize2 className="w-4 h-4" />
+        </button>
       </div>
-      <MapContainer center={[8.5, 2.3]} zoom={7} className="h-80 rounded-lg dark:border dark:border-gray-700">
+      <MapContainer center={[8.5, 2.3]} zoom={7} className="h-72 w-full">
         <TileLayer url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" />
         {farms.map((farm, idx) => (
           <Marker key={idx} position={[farm.lat, farm.lng]}>

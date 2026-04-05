@@ -1,18 +1,5 @@
 import { motion } from 'framer-motion';
-import AnimatedSection from './AnimatedSection';
-import { 
-  MapPin, 
-  Calendar, 
-  Star, 
-  TrendingUp, 
-  Sprout,
-  Apple,
-  Wheat,
-  Flower2,
-  Leaf,
-  Nut,
-  Package
-} from 'lucide-react';
+import { MapPin, Calendar, Star, TrendingUp, Sprout, Wheat, Apple, Flower2, Leaf, Nut, Package, Store } from 'lucide-react';
 
 const offers = [
   { 
@@ -25,7 +12,7 @@ const offers = [
     score: 4.8, 
     price: '450 FCFA/kg',
     icon: Wheat,
-    iconColor: 'from-yellow-500 to-amber-600',
+    iconColor: 'from-yellow-500 to-amber-500',
     trend: '+12%'
   },
   { 
@@ -38,7 +25,7 @@ const offers = [
     score: 4.5, 
     price: '600 FCFA/kg',
     icon: Apple,
-    iconColor: 'from-red-500 to-rose-600',
+    iconColor: 'from-red-500 to-rose-500',
     trend: '+8%'
   },
   { 
@@ -50,8 +37,8 @@ const offers = [
     date: '30/06', 
     score: 4.2, 
     price: '800 FCFA/kg',
-    icon: Sprout,
-    iconColor: 'from-orange-500 to-amber-600',
+    icon: Flower2,
+    iconColor: 'from-orange-500 to-amber-500',
     trend: '+5%'
   },
   { 
@@ -64,7 +51,7 @@ const offers = [
     score: 4.9, 
     price: '350 FCFA/kg',
     icon: Leaf,
-    iconColor: 'from-green-500 to-emerald-600',
+    iconColor: 'from-green-500 to-emerald-500',
     trend: '+15%'
   },
   { 
@@ -77,7 +64,7 @@ const offers = [
     score: 4.6, 
     price: '1200 FCFA/kg',
     icon: Nut,
-    iconColor: 'from-amber-500 to-orange-600',
+    iconColor: 'from-amber-500 to-orange-500',
     trend: '+20%'
   },
 ];
@@ -87,13 +74,13 @@ const containerVariants = {
   visible: {
     opacity: 1,
     transition: {
-      staggerChildren: 0.1
+      staggerChildren: 0.08
     }
   }
 };
 
 const itemVariants = {
-  hidden: { x: -30, opacity: 0 },
+  hidden: { x: -20, opacity: 0 },
   visible: { x: 0, opacity: 1 }
 };
 
@@ -105,7 +92,7 @@ export default function OffersList({ selectedCrop, selectedRegion }) {
 
   if (filtered.length === 0) {
     return (
-      <div className="bg-white dark:bg-gray-800 rounded-xl shadow-sm p-12 text-center">
+      <div className="bg-white dark:bg-gray-800 rounded-xl p-8 text-center border border-gray-200 dark:border-gray-700">
         <p className="text-gray-500 dark:text-gray-400">Aucune offre ne correspond à vos filtres.</p>
       </div>
     );
@@ -113,17 +100,19 @@ export default function OffersList({ selectedCrop, selectedRegion }) {
 
   return (
     <div>
-      {/* En-tête avec compteur */}
+      {/* En-tête avec icône pro */}
       <div className="flex justify-between items-center mb-4">
-        <h2 className="text-xl font-bold text-gray-900 dark:text-white">
-          🌾 Offres de récoltes futures
-        </h2>
+        <div className="flex items-center gap-2">
+          <Package className="w-5 h-5 text-green-600 dark:text-green-400" />
+          <h2 className="text-xl font-bold text-gray-900 dark:text-white">
+            Offres de récoltes futures
+          </h2>
+        </div>
         <span className="text-sm text-gray-500 dark:text-gray-400 bg-gray-100 dark:bg-gray-800 px-3 py-1 rounded-full">
           {filtered.length} offres
         </span>
       </div>
 
-      {/* Liste des offres */}
       <motion.div
         variants={containerVariants}
         initial="hidden"
@@ -136,20 +125,18 @@ export default function OffersList({ selectedCrop, selectedRegion }) {
             <motion.div
               key={offer.id}
               variants={itemVariants}
-              whileHover={{ x: 4, transition: { duration: 0.2 } }}
-              className="group bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 hover:border-green-300 dark:hover:border-green-700 hover:shadow-md transition-all duration-200"
+              whileHover={{ x: 4 }}
+              className="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 hover:border-green-300 dark:hover:border-green-700 hover:shadow-md transition-all duration-200"
             >
               <div className="p-4">
                 <div className="flex items-start justify-between gap-4 flex-wrap">
                   
-                  {/* Partie gauche : icône + infos */}
+                  {/* Icône professionnelle à gauche */}
                   <div className="flex items-start gap-3 flex-1 min-w-0">
-                    {/* Icône Lucide professionnelle */}
                     <div className={`w-12 h-12 rounded-xl bg-gradient-to-br ${offer.iconColor} flex items-center justify-center shadow-md shrink-0`}>
                       <Icon className="w-6 h-6 text-white" />
                     </div>
                     
-                    {/* Infos principales */}
                     <div className="flex-1 min-w-0">
                       <div className="flex items-center gap-2 flex-wrap">
                         <h3 className="font-bold text-gray-900 dark:text-white">
@@ -182,12 +169,11 @@ export default function OffersList({ selectedCrop, selectedRegion }) {
                     </div>
                   </div>
                   
-                  {/* Partie droite : prix + bouton */}
                   <div className="text-right shrink-0">
                     <div className="text-xl font-bold text-green-600 dark:text-green-400">
                       {offer.price}
                     </div>
-                    <button className="mt-2 bg-gradient-to-r from-green-600 to-emerald-600 text-white px-4 py-1.5 rounded-lg text-sm font-medium hover:from-green-700 hover:to-emerald-700 transition shadow-sm hover:shadow">
+                    <button className="mt-2 bg-gradient-to-r from-green-600 to-emerald-600 text-white px-4 py-1.5 rounded-lg text-sm font-medium hover:from-green-700 hover:to-emerald-700 transition shadow-sm">
                       Faire offre →
                     </button>
                   </div>

@@ -1,13 +1,36 @@
+import { useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
-import { Activity, TrendingUp, Users, DollarSign } from 'lucide-react';
+import { User, Package, ShoppingCart, TrendingUp, LogOut } from 'lucide-react';
+import { useAuth } from '../context/AuthContext';
 
 export default function Dashboard() {
-  const stats = [
-    { label: 'Offres actives', value: '12', icon: Activity, color: 'from-blue-500 to-cyan-500' },
-    { label: 'Contrats en cours', value: '8', icon: TrendingUp, color: 'from-green-500 to-emerald-500' },
-    { label: 'Acheteurs intéressés', value: '24', icon: Users, color: 'from-purple-500 to-pink-500' },
-    { label: 'Volume total', value: '2.4M FCFA', icon: DollarSign, color: 'from-yellow-500 to-amber-500' },
-  ];
+  const { user, logout, isAuthenticated, loading } = useAuth();
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    console.log('Dashboard - isAuthenticated:', isAuthenticated, 'loading:', loading);
+    if (!loading && !isAuthenticated) {
+      navigate('/login');
+    }
+  }, [loading, isAuthenticated, navigate]);
+
+  const handleLogout = () => {
+    logout();
+    navigate('/login');
+  };
+
+  if (loading) {
+    return (
+      <div className="min-h-screen flex items-center justify-center">
+        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-green-600 mx-auto"></div>
+      </div>
+    );
+  }
+
+  if (!user) {
+    return null;
+  }
 
   return (
     <motion.div
@@ -16,39 +39,79 @@ export default function Dashboard() {
       exit={{ opacity: 0 }}
       className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8"
     >
-      <h1 className="text-3xl font-bold text-gray-900 dark:text-white mb-8">Tableau de bord</h1>
-      
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
-        {stats.map((stat, index) => {
-          const Icon = stat.icon;
-          return (
-            <motion.div
-              key={index}
-              whileHover={{ y: -5 }}
-              className="bg-white dark:bg-gray-800 rounded-xl p-6 shadow-lg"
-            >
-              <div className={`w-12 h-12 rounded-xl bg-gradient-to-r ${stat.color} flex items-center justify-center mb-4`}>
-                <Icon className="w-6 h-6 text-white" />
-              </div>
-              <div className="text-2xl font-bold text-gray-900 dark:text-white">{stat.value}</div>
-              <div className="text-sm text-gray-600 dark:text-gray-400">{stat.label}</div>
-            </motion.div>
-          );
-        })}
+      <div className="flex justify-between items-center mb-8">
+        <div>
+          <h1 className="text-3xl font-bold text-gray-900 dark:text-white">
+            Bonjour, {user.username} 👋
+          </h1>
+          <p className="text-gray-600 dark:text-gray-400 mt-1">
+            Bienvenue sur votre tableau de bord {user.role === 'agriculteur' ? 'Agriculteur' : 'Acheteur'}
+          </p>
+        </div>
+        <button
+          onClick={handleLogout}
+          className="flex items-center gap-2 px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition"
+        >
+          <LogOut className="w-4 h-4" />
+          Déconnexion
+        </button>
       </div>
 
-      <div className="bg-white dark:bg-gray-800 rounded-xl p-6 shadow-lg">
-        <h2 className="text-xl font-bold text-gray-900 dark:text-white mb-4">Activité récente</h2>
-        <div className="space-y-3">
-          {[1, 2, 3, 4].map((i) => (
-            <div key={i} className="flex items-center justify-between py-3 border-b border-gray-200 dark:border-gray-700">
-              <div>
-                <p className="font-medium text-gray-900 dark:text-white">Nouvelle offre de maïs</p>
-                <p className="text-sm text-gray-500 dark:text-gray-400">Ferme Yaka - 2 tonnes</p>
-              </div>
-              <span className="text-sm text-green-600 dark:text-green-400">En attente</span>
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+        <div className="bg-white dark:bg-gray-800 rounded-xl p-6 shadow-lg">
+          <div className="flex items-center justify-between mb-4">
+            <div className="p-3 bg-green-100 dark:bg-green-900/30 rounded-lg">
+              <Package className="w-6 h-6 text-green-600" />
             </div>
-          ))}
+            <span className="text-2xl font-bold text-gray-900 dark:text-white">0</span>
+          </div>
+          <h3 className="text-gray-600 dark:text-gray-400">Mes produits</h3>
+        </div>
+
+        <div className="bg-white dark:bg-gray-800 rounded-xl p-6 shadow-lg">
+          <div className="flex items-center justify-between mb-4">
+            <div className="p-3 bg-blue-100 dark:bg-blue-900/30 rounded-lg">
+              <ShoppingCart className="w-6 h-6 text-blue-600" />
+            </div>
+            <span className="text-2xl font-bold text-gray-900 dark:text-white">0</span>
+          </div>
+          <h3 className="text-gray-600 dark:text-gray-400">Commandes</h3>
+        </div>
+
+        <div className="bg-white dark:bg-gray-800 rounded-xl p-6 shadow-lg">
+          <div className="flex items-center justify-between mb-4">
+            <div className="p-3 bg-purple-100 dark:bg-purple-900/30 rounded-lg">
+              <TrendingUp className="w-6 h-6 text-purple-600" />
+            </div>
+            <span className="text-2xl font-bold text-gray-900 dark:text-white">0 FCFA</span>
+          </div>
+          <h3 className="text-gray-600 dark:text-gray-400">Chiffre d'affaires</h3>
+        </div>
+      </div>
+
+      <div className="bg-white dark:bg-gray-800 rounded-xl shadow-lg overflow-hidden">
+        <div className="bg-gradient-to-r from-green-600 to-emerald-600 px-6 py-4">
+          <h2 className="text-xl font-bold text-white">Mon profil</h2>
+        </div>
+        <div className="p-6">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div>
+              <p className="text-sm text-gray-500 dark:text-gray-400">Nom d'utilisateur</p>
+              <p className="font-medium text-gray-900 dark:text-white">{user.username}</p>
+            </div>
+            <div>
+              <p className="text-sm text-gray-500 dark:text-gray-400">Email</p>
+              <p className="font-medium text-gray-900 dark:text-white">{user.email}</p>
+            </div>
+            <div>
+              <p className="text-sm text-gray-500 dark:text-gray-400">Rôle</p>
+              <p className="font-medium capitalize text-gray-900 dark:text-white">{user.role}</p>
+            </div>
+            <div>
+              <p className="text-sm text-gray-500 dark:text-gray-400">Score de confiance</p>
+              <p className="font-medium text-gray-900 dark:text-white">{user.trust_score || 0} / 5</p>
+            </div>
+          </div>
         </div>
       </div>
     </motion.div>

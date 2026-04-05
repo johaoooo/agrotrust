@@ -6,18 +6,18 @@ import { useAuth } from '../../context/AuthContext';
 
 export default function Register() {
   const [formData, setFormData] = useState({
-    name: '',
+    username: '',
     email: '',
     phone: '',
     address: '',
     role: 'acheteur',
     password: '',
-    confirmPassword: ''
+    password_confirm: ''
   });
   const [showPassword, setShowPassword] = useState(false);
   const [error, setError] = useState('');
+  const [success, setSuccess] = useState('');
   const [loading, setLoading] = useState(false);
-  const { login } = useAuth();
   const navigate = useNavigate();
 
   const handleChange = (e) => {
@@ -27,32 +27,47 @@ export default function Register() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     setError('');
-
-    if (formData.password !== formData.confirmPassword) {
-      setError('Les mots de passe ne correspondent pas');
-      return;
-    }
-
-    if (formData.password.length < 6) {
-      setError('Le mot de passe doit contenir au moins 6 caractères');
-      return;
-    }
-
+    setSuccess('');
     setLoading(true);
 
-    setTimeout(() => {
-      login({
-        id: Date.now(),
-        name: formData.name,
-        email: formData.email,
-        role: formData.role,
-        phone: formData.phone,
-        address: formData.address,
-        avatar: formData.role === 'agriculteur' ? '👨‍🌾' : '🏪'
-      });
-      navigate('/dashboard');
+    if (formData.password !== formData.password_confirm) {
+      setError('Les mots de passe ne correspondent pas');
       setLoading(false);
-    }, 1000);
+      return;
+    }
+
+    try {
+      const response = await fetch('http://localhost:8000/api/auth/register/', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          username: formData.username,
+          email: formData.email,
+          password: formData.password,
+          password_confirm: formData.password_confirm,
+          role: formData.role,
+          phone: formData.phone,
+          address: formData.address,
+        }),
+      });
+
+      const data = await response.json();
+
+      if (response.ok) {
+        setSuccess('Compte créé avec succès ! Redirection...');
+        setTimeout(() => {
+          navigate('/login');
+        }, 2000);
+      } else {
+        setError(data.error || 'Erreur lors de l\'inscription');
+      }
+    } catch (err) {
+      setError('Erreur de connexion au serveur');
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
@@ -62,7 +77,6 @@ export default function Register() {
         animate={{ opacity: 1, y: 0 }}
         className="max-w-lg w-full bg-white dark:bg-gray-800 rounded-xl shadow-lg overflow-hidden"
       >
-        {/* Header compact */}
         <div className="bg-gradient-to-r from-green-600 to-emerald-600 px-6 py-4 text-center">
           <div className="inline-flex items-center justify-center w-12 h-12 bg-white/20 rounded-xl mb-2">
             <Sprout className="w-6 h-6 text-white" />
@@ -73,33 +87,38 @@ export default function Register() {
 
         <form className="p-6 space-y-4" onSubmit={handleSubmit}>
           {error && (
-            <div className="bg-red-50 dark:bg-red-900/30 border border-red-500 text-red-700 dark:text-red-400 px-3 py-2 rounded-lg text-xs">
+            <div className="bg-red-50 dark:bg-red-900/30 border border-red-500 text-red-700 dark:text-red-400 px-3 py-2 rounded-lg text-sm">
               {error}
+            </div>
+          )}
+          {success && (
+            <div className="bg-green-50 dark:bg-green-900/30 border border-green-500 text-green-700 dark:text-green-400 px-3 py-2 rounded-lg text-sm">
+              {success}
             </div>
           )}
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div>
               <label className="block text-xs font-medium text-gray-700 dark:text-gray-300 mb-1">
-                Nom complet
+                Nom d'utilisateur *
               </label>
               <div className="relative">
                 <User className="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-gray-400" />
                 <input
                   type="text"
-                  name="name"
-                  value={formData.name}
+                  name="username"
+                  value={formData.username}
                   onChange={handleChange}
                   required
-                  className="w-full pl-9 pr-3 py-1.5 text-sm border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent bg-white dark:bg-gray-700 text-gray-900 dark:text-white"
-                  placeholder="Jean Dupont"
+                  className="w-full pl-9 pr-3 py-1.5 text-sm border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-green-500 bg-white dark:bg-gray-700 text-gray-900 dark:text-white"
+                  placeholder="johndoe"
                 />
               </div>
             </div>
 
             <div>
               <label className="block text-xs font-medium text-gray-700 dark:text-gray-300 mb-1">
-                Email
+                Email *
               </label>
               <div className="relative">
                 <Mail className="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-gray-400" />
@@ -109,8 +128,8 @@ export default function Register() {
                   value={formData.email}
                   onChange={handleChange}
                   required
-                  className="w-full pl-9 pr-3 py-1.5 text-sm border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent bg-white dark:bg-gray-700 text-gray-900 dark:text-white"
-                  placeholder="jean@example.com"
+                  className="w-full pl-9 pr-3 py-1.5 text-sm border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-green-500 bg-white dark:bg-gray-700 text-gray-900 dark:text-white"
+                  placeholder="john@example.com"
                 />
               </div>
             </div>
@@ -126,8 +145,7 @@ export default function Register() {
                   name="phone"
                   value={formData.phone}
                   onChange={handleChange}
-                  required
-                  className="w-full pl-9 pr-3 py-1.5 text-sm border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent bg-white dark:bg-gray-700 text-gray-900 dark:text-white"
+                  className="w-full pl-9 pr-3 py-1.5 text-sm border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-green-500 bg-white dark:bg-gray-700 text-gray-900 dark:text-white"
                   placeholder="+229 90 12 34 56"
                 />
               </div>
@@ -144,8 +162,7 @@ export default function Register() {
                   name="address"
                   value={formData.address}
                   onChange={handleChange}
-                  required
-                  className="w-full pl-9 pr-3 py-1.5 text-sm border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent bg-white dark:bg-gray-700 text-gray-900 dark:text-white"
+                  className="w-full pl-9 pr-3 py-1.5 text-sm border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-green-500 bg-white dark:bg-gray-700 text-gray-900 dark:text-white"
                   placeholder="Cotonou, Bénin"
                 />
               </div>
@@ -154,7 +171,7 @@ export default function Register() {
 
           <div>
             <label className="block text-xs font-medium text-gray-700 dark:text-gray-300 mb-1">
-              Je suis
+              Je suis *
             </label>
             <div className="flex gap-4">
               <label className="flex items-center gap-2 cursor-pointer">
@@ -164,7 +181,7 @@ export default function Register() {
                   value="acheteur"
                   checked={formData.role === 'acheteur'}
                   onChange={handleChange}
-                  className="w-4 h-4 text-green-600 focus:ring-green-500"
+                  className="w-4 h-4 text-green-600"
                 />
                 <span className="text-sm text-gray-700 dark:text-gray-300">🏪 Acheteur</span>
               </label>
@@ -175,7 +192,7 @@ export default function Register() {
                   value="agriculteur"
                   checked={formData.role === 'agriculteur'}
                   onChange={handleChange}
-                  className="w-4 h-4 text-green-600 focus:ring-green-500"
+                  className="w-4 h-4 text-green-600"
                 />
                 <span className="text-sm text-gray-700 dark:text-gray-300">👨‍🌾 Agriculteur</span>
               </label>
@@ -185,7 +202,7 @@ export default function Register() {
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div>
               <label className="block text-xs font-medium text-gray-700 dark:text-gray-300 mb-1">
-                Mot de passe
+                Mot de passe *
               </label>
               <div className="relative">
                 <Lock className="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-gray-400" />
@@ -195,7 +212,7 @@ export default function Register() {
                   value={formData.password}
                   onChange={handleChange}
                   required
-                  className="w-full pl-9 pr-8 py-1.5 text-sm border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent bg-white dark:bg-gray-700 text-gray-900 dark:text-white"
+                  className="w-full pl-9 pr-8 py-1.5 text-sm border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-green-500 bg-white dark:bg-gray-700 text-gray-900 dark:text-white"
                   placeholder="••••••••"
                 />
               </div>
@@ -203,17 +220,17 @@ export default function Register() {
 
             <div>
               <label className="block text-xs font-medium text-gray-700 dark:text-gray-300 mb-1">
-                Confirmer
+                Confirmer *
               </label>
               <div className="relative">
                 <Lock className="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-gray-400" />
                 <input
                   type={showPassword ? 'text' : 'password'}
-                  name="confirmPassword"
-                  value={formData.confirmPassword}
+                  name="password_confirm"
+                  value={formData.password_confirm}
                   onChange={handleChange}
                   required
-                  className="w-full pl-9 pr-8 py-1.5 text-sm border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent bg-white dark:bg-gray-700 text-gray-900 dark:text-white"
+                  className="w-full pl-9 pr-8 py-1.5 text-sm border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-green-500 bg-white dark:bg-gray-700 text-gray-900 dark:text-white"
                   placeholder="••••••••"
                 />
                 <button
@@ -229,7 +246,7 @@ export default function Register() {
 
           <div className="flex items-center justify-between">
             <label className="flex items-center cursor-pointer">
-              <input type="checkbox" required className="w-3.5 h-3.5 rounded border-gray-300 text-green-600 focus:ring-green-500" />
+              <input type="checkbox" required className="w-3.5 h-3.5 rounded border-gray-300 text-green-600" />
               <span className="ml-2 text-xs text-gray-600 dark:text-gray-400">
                 J'accepte les <a href="#" className="text-green-600">conditions</a>
               </span>
