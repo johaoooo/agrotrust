@@ -124,7 +124,7 @@ export default function Features() {
           {/* Description avec icônes */}
           <p className="text-lg md:text-xl text-gray-600 dark:text-gray-300 max-w-2xl mx-auto flex items-center justify-center gap-2 flex-wrap">
             <span>🌍</span>
-            AgroTrust connecte l'écosystème agricole ouest-africain
+            Glégbé connecte l'écosystème agricole ouest-africain
             <span>🌱</span>
             <br />
             pour une agriculture plus juste et durable

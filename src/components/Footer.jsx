@@ -71,7 +71,7 @@ export default function Footer() {
               <div className="w-10 h-10 bg-gradient-to-br from-green-500 to-emerald-600 rounded-xl flex items-center justify-center">
                 <Sprout className="w-6 h-6 text-white" />
               </div>
-              <span className="text-xl font-bold text-white">AgroTrust</span>
+              <span className="text-xl font-bold text-white">Glégbé</span>
             </div>
             <p className="text-sm text-gray-400 mb-4 leading-relaxed">
               La Bourse Agricole Communautaire de l'Afrique de l'Ouest. 
@@ -163,7 +163,7 @@ export default function Footer() {
         {/* Bas du footer - Copyright */}
         <div className="border-t border-gray-800 mt-10 pt-8 text-center">
           <p className="text-sm text-gray-400">
-            &copy; {currentYear} AgroTrust – Tous droits réservés
+            &copy; {currentYear} Glégbé – Tous droits réservés
           </p>
           <p className="text-xs text-gray-500 mt-2 flex items-center justify-center gap-1">
             Fait avec <Heart className="w-3 h-3 text-red-500" /> au Bénin

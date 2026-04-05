@@ -67,7 +67,7 @@ export default function Navbar() {
             </div>
             <div>
               <span className="text-xl font-bold bg-gradient-to-r from-emerald-600 to-green-700 dark:from-emerald-400 dark:to-green-600 bg-clip-text text-transparent">
-                AgroTrust
+                Glégbé
               </span>
             </div>
           </Link>

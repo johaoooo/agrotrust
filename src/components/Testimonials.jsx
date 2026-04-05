@@ -5,7 +5,7 @@ const testimonials = [
   {
     name: "Koffi Mensah",
     role: "Agriculteur - Zou",
-    content: "Grâce à AgroTrust, j'ai vendu mon maïs avant même de le planter. J'ai reçu une avance qui m'a permis d'acheter des intrants de qualité.",
+    content: "Grâce à Glégbé, j'ai vendu mon maïs avant même de le planter. J'ai reçu une avance qui m'a permis d'acheter des intrants de qualité.",
     rating: 5,
     type: "farmer",
     image: "👨‍🌾"
@@ -45,7 +45,7 @@ export default function Testimonials() {
             <span className="text-sm font-semibold text-green-600 dark:text-green-400">Ils nous font confiance</span>
           </div>
           <h2 className="text-3xl md:text-4xl font-bold text-gray-900 dark:text-white mb-4">
-            Ce qu'ils disent de <span className="text-transparent bg-clip-text bg-gradient-to-r from-green-600 to-emerald-600">AgroTrust</span>
+            Ce qu'ils disent de <span className="text-transparent bg-clip-text bg-gradient-to-r from-green-600 to-emerald-600">Glégbé</span>
           </h2>
         </motion.div>
 

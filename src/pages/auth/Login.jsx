@@ -67,7 +67,7 @@ export default function Login() {
             Connexion
           </h2>
           <p className="mt-2 text-sm text-gray-600 dark:text-gray-400">
-            Accédez à votre compte AgroTrust
+            Accédez à votre compte Glégbé
           </p>
         </div>
 

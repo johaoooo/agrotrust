@@ -68,7 +68,7 @@ export default function Register() {
             <Sprout className="w-6 h-6 text-white" />
           </div>
           <h2 className="text-xl font-bold text-white">Créer un compte</h2>
-          <p className="text-green-100 text-sm">Rejoignez AgroTrust</p>
+          <p className="text-green-100 text-sm">Rejoignez Glégbé</p>
         </div>
 
         <form className="p-6 space-y-4" onSubmit={handleSubmit}>

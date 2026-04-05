@@ -89,7 +89,7 @@ export default function StatsSection() {
           className="text-center mb-12"
         >
           <h2 className="text-3xl md:text-4xl font-bold text-white mb-4">
-            AgroTrust en <span className="text-transparent bg-clip-text bg-gradient-to-r from-green-400 to-emerald-400">chiffres</span>
+            Glégbé en <span className="text-transparent bg-clip-text bg-gradient-to-r from-green-400 to-emerald-400">chiffres</span>
           </h2>
           <p className="text-lg text-gray-300 max-w-2xl mx-auto">
             L'impact de notre plateforme sur l'écosystème agricole ouest-africain
