@@ -16,7 +16,7 @@ export default function Login() {
   // Vérifier si déjà connecté
   useEffect(() => {
     if (isAuthenticated) {
-      navigate('/dashboard');
+      navigate('/');
     }
   }, [isAuthenticated, navigate]);
 
@@ -39,7 +39,7 @@ export default function Login() {
       if (response.ok) {
         // Appeler la fonction login du contexte
         login(data.user, { access: data.access, refresh: data.refresh });
-        navigate('/dashboard');
+        navigate('/');
       } else {
         setError(data.error || 'Identifiants invalides');
       }

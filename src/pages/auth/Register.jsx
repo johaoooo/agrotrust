@@ -58,7 +58,7 @@ export default function Register() {
       if (response.ok) {
         setSuccess('Compte créé avec succès ! Redirection...');
         setTimeout(() => {
-          navigate('/login');
+          navigate('/');
         }, 2000);
       } else {
         setError(data.error || 'Erreur lors de l\'inscription');

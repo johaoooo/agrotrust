@@ -1,6 +1,4 @@
-import { motion } from 'framer-motion';
 import { Leaf, Handshake, Shield } from 'lucide-react';
-import AnimatedSection from './AnimatedSection';
 
 const cards = [
   {
@@ -17,60 +15,30 @@ const cards = [
     icon: Shield,
     title: "Paiement Sécurisé",
     color: "from-purple-500 to-pink-500"
-  }
+  },
 ];
-
-const containerVariants = {
-  hidden: { opacity: 0 },
-  visible: {
-    opacity: 1,
-    transition: {
-      staggerChildren: 0.15
-    }
-  }
-};
-
-const cardVariants = {
-  hidden: { y: 50, opacity: 0 },
-  visible: { y: 0, opacity: 1 }
-};
 
 export default function ValueCards() {
   return (
-    <section className="py-8 bg-transparent">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        
-        <motion.div
-          variants={containerVariants}
-          initial="hidden"
-          whileInView="visible"
-          viewport={{ once: true, margin: "-50px" }}
-          className="grid grid-cols-1 md:grid-cols-3 gap-6"
-        >
+    <section className="py-4 bg-transparent">
+      <div className="max-w-7xl mx-auto px-3 sm:px-6 lg:px-8">
+        <div className="grid grid-cols-3 gap-1 sm:gap-4">
           {cards.map((card, index) => {
             const Icon = card.icon;
             return (
-              <motion.div
-                key={index}
-                variants={cardVariants}
-                whileHover={{ y: -5 }}
-                className="group text-center"
-              >
-                <motion.div
-                  whileHover={{ rotate: 360, scale: 1.1 }}
-                  transition={{ duration: 0.5 }}
-                  className={`w-16 h-16 mx-auto rounded-full bg-gradient-to-r ${card.color} flex items-center justify-center shadow-md group-hover:shadow-lg transition-all`}
+              <div key={index} className="group text-center">
+                <div
+                  className={`w-10 h-10 sm:w-14 sm:h-14 mx-auto rounded-full bg-gradient-to-r ${card.color} flex items-center justify-center shadow-md group-hover:shadow-lg transition-all hover:scale-105`}
                 >
-                  <Icon className="w-8 h-8 text-white" />
-                </motion.div>
-                
-                <h3 className="text-lg font-semibold text-gray-800 dark:text-white mt-4">
+                  <Icon className="w-5 h-5 sm:w-7 sm:h-7 text-white" />
+                </div>
+                <h3 className="text-[10px] sm:text-base font-semibold text-gray-800 dark:text-white mt-1 sm:mt-3">
                   {card.title}
                 </h3>
-              </motion.div>
+              </div>
             );
           })}
-        </motion.div>
+        </div>
       </div>
     </section>
   );

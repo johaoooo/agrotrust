@@ -8,6 +8,7 @@ import OffersList from '../components/OffersList';
 import StatsSection from '../components/StatsSection';
 import HowItWorks from '../components/HowItWorks';
 import Testimonials from '../components/Testimonials';
+import ConseilsAgricoles from '../components/ConseilsAgricoles';
 import AnimatedSection from '../components/AnimatedSection';
 
 export default function HomePage() {
@@ -22,21 +23,26 @@ export default function HomePage() {
     >
       <Hero />
       
-      <AnimatedSection direction="up" delay={0.1}>
+      {/* ValueCards - immédiatement après le hero */}
+      <div className="mt-0 -mb-2">
         <ValueCards />
-      </AnimatedSection>
+      </div>
       
-      {/* Section Carte + Sidebar horizontale */}
+      {/* Section Conseils Agricoles */}
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        <AnimatedSection direction="up" delay={0.15}>
+          <ConseilsAgricoles />
+        </AnimatedSection>
+      </div>
+      
+      {/* Section Carte + Sidebar */}
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         <div className="flex flex-col lg:flex-row gap-6">
-          {/* Carte - 2/3 */}
           <div className="lg:w-2/3">
             <AnimatedSection direction="left" delay={0.2}>
               <MapSection />
             </AnimatedSection>
           </div>
-          
-          {/* Sidebar horizontale - 1/3 */}
           <div className="lg:w-1/3">
             <AnimatedSection direction="right" delay={0.2}>
               <Sidebar 
