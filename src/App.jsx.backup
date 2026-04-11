@@ -1,0 +1,64 @@
+import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import { ThemeProvider } from './context/ThemeContext';
+import ToastNotification from './components/ToastNotification';
+import Navbar from './components/Navbar';
+import Footer from './components/Footer';
+import HomePage from './pages/HomePage';
+import Offres from './pages/Offres';
+import Dashboard from './pages/Dashboard';
+import MesCommandes from './pages/MesCommandes';
+import MonCompte from './pages/MonCompte';
+import MicroCredit from './pages/MicroCredit';
+import Certification from './pages/Certification';
+import Formation from './pages/Formation';
+import Communaute from './pages/Communaute';
+import Contact from './pages/Contact';
+import APropos from './pages/APropos';
+import Aide from './pages/Aide';
+import Support from './pages/Support';
+import Parametres from './pages/Parametres';
+import Parrainage from './pages/Parrainage';
+import Contrats from './pages/Contrats';
+import CalendrierSemis from './pages/CalendrierSemis';
+import Login from './pages/auth/Login';
+import Register from './pages/auth/Register';
+import PrivateRoute from './components/PrivateRoute';
+
+function App() {
+  return (
+    <ThemeProvider>
+      <Router>
+        <ToastNotification />
+        <div className="min-h-screen bg-gray-50 dark:bg-gray-900 flex flex-col transition-colors duration-300">
+          <Navbar />
+          <main className="flex-grow">
+            <Routes>
+              <Route path="/" element={<HomePage />} />
+              <Route path="/offres" element={<Offres />} />
+              <Route path="/dashboard" element={<PrivateRoute><Dashboard /></PrivateRoute>} />
+              <Route path="/mes-commandes" element={<PrivateRoute><MesCommandes /></PrivateRoute>} />
+              <Route path="/mon-compte" element={<PrivateRoute><MonCompte /></PrivateRoute>} />
+              <Route path="/micro-credit" element={<MicroCredit />} />
+              <Route path="/certification" element={<Certification />} />
+              <Route path="/formation" element={<Formation />} />
+              <Route path="/communaute" element={<Communaute />} />
+              <Route path="/contact" element={<Contact />} />
+              <Route path="/a-propos" element={<APropos />} />
+              <Route path="/aide" element={<Aide />} />
+              <Route path="/support" element={<Support />} />
+              <Route path="/parametres" element={<Parametres />} />
+              <Route path="/parrainage" element={<Parrainage />} />
+              <Route path="/contrats" element={<Contrats />} />
+              <Route path="/calendrier-semis" element={<CalendrierSemis />} />
+              <Route path="/login" element={<Login />} />
+              <Route path="/register" element={<Register />} />
+            </Routes>
+          </main>
+          <Footer />
+        </div>
+      </Router>
+    </ThemeProvider>
+  );
+}
+
+export default App;

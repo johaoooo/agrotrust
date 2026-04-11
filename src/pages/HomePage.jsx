@@ -1,15 +1,12 @@
 import { useState } from 'react';
 import { motion } from 'framer-motion';
 import Hero from '../components/Hero';
-import ValueCards from '../components/ValueCards';
+import WhyChooseUs from '../components/WhyChooseUs';
 import MapSection from '../components/MapSection';
 import Sidebar from '../components/Sidebar';
 import OffersList from '../components/OffersList';
-import StatsSection from '../components/StatsSection';
 import HowItWorks from '../components/HowItWorks';
 import Testimonials from '../components/Testimonials';
-import ConseilsAgricoles from '../components/ConseilsAgricoles';
-import AnimatedSection from '../components/AnimatedSection';
 
 export default function HomePage() {
   const [selectedCrop, setSelectedCrop] = useState('all');
@@ -22,49 +19,44 @@ export default function HomePage() {
       exit={{ opacity: 0 }}
     >
       <Hero />
+      <WhyChooseUs />
       
-      {/* ValueCards - immédiatement après le hero */}
-      <div className="mt-0 -mb-2">
-        <ValueCards />
-      </div>
-      
-      {/* Section Conseils Agricoles */}
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        <AnimatedSection direction="up" delay={0.15}>
-          <ConseilsAgricoles />
-        </AnimatedSection>
-      </div>
-      
-      {/* Section Carte + Sidebar */}
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        <div className="flex flex-col lg:flex-row gap-6">
-          <div className="lg:w-2/3">
-            <AnimatedSection direction="left" delay={0.2}>
+      {/* Section Map et Sidebar */}
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+          <div className="lg:col-span-2">
+            <div className="rounded-2xl overflow-hidden shadow-xl">
               <MapSection />
-            </AnimatedSection>
+            </div>
           </div>
-          <div className="lg:w-1/3">
-            <AnimatedSection direction="right" delay={0.2}>
+          <div className="lg:col-span-1">
+            <div className="sticky top-24">
               <Sidebar 
                 setSelectedCrop={setSelectedCrop} 
                 setSelectedRegion={setSelectedRegion} 
               />
-            </AnimatedSection>
+            </div>
           </div>
         </div>
       </div>
-      
-      {/* Offres de récoltes futures */}
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pb-8">
-        <AnimatedSection direction="up" delay={0.3}>
-          <OffersList 
-            selectedCrop={selectedCrop}
-            selectedRegion={selectedRegion}
-          />
-        </AnimatedSection>
+
+      {/* Offres */}
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-xl overflow-hidden">
+          <div className="p-6 border-b border-gray-200 dark:border-gray-700">
+            <h2 className="text-2xl font-bold text-gray-900 dark:text-white">
+              Offres disponibles
+            </h2>
+            <p className="text-gray-600 dark:text-gray-400 mt-1">
+              Découvrez les meilleurs produits agricoles près de chez vous
+            </p>
+          </div>
+          <div className="p-6">
+            <OffersList selectedCrop={selectedCrop} selectedRegion={selectedRegion} />
+          </div>
+        </div>
       </div>
-      
-      <StatsSection />
+
       <HowItWorks />
       <Testimonials />
     </motion.div>

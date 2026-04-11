@@ -1,188 +1,312 @@
-import { motion } from 'framer-motion';
-import { MapPin, Calendar, Star, TrendingUp, Sprout, Wheat, Apple, Flower2, Leaf, Nut, Package, Store } from 'lucide-react';
+import { useState, useEffect } from 'react';
+import { motion, AnimatePresence } from 'framer-motion';
+import { 
+  MapPin, 
+  Package, 
+  Heart, 
+  Share2, 
+  Star,
+  Truck,
+  ChevronLeft,
+  ChevronRight,
+  ShoppingBag,
+  ArrowRight,
+  Leaf
+} from 'lucide-react';
 
-const offers = [
-  { 
-    id: 1, 
-    name: 'Ferme Yaka', 
-    region: 'Zou', 
-    crop: 'Maïs', 
-    qty: '2 tonnes', 
-    date: '15/06', 
-    score: 4.8, 
-    price: '450 FCFA/kg',
-    icon: Wheat,
-    iconColor: 'from-yellow-500 to-amber-500',
-    trend: '+12%'
+const mockOffers = [
+  {
+    id: 1,
+    title: "Maïs blanc bio",
+    category: "Céréales",
+    price: 25000,
+    unit: "tonne",
+    quantity: 5,
+    location: "Zou",
+    farmer: "Jean Adjanohoun",
+    rating: 4.8,
+    reviews: 24,
+    image: "/images/mais.jpg",
+    isOrganic: true,
+    delivery: true
   },
-  { 
-    id: 2, 
-    name: 'Coop Wéma', 
-    region: 'Borgou', 
-    crop: 'Tomate', 
-    qty: '500 kg', 
-    date: '22/06', 
-    score: 4.5, 
-    price: '600 FCFA/kg',
-    icon: Apple,
-    iconColor: 'from-red-500 to-rose-500',
-    trend: '+8%'
+  {
+    id: 2,
+    title: "Soja de qualité",
+    category: "Légumineuses",
+    price: 30000,
+    unit: "tonne",
+    quantity: 3,
+    location: "Collines",
+    farmer: "Marie Soglo",
+    rating: 4.9,
+    reviews: 18,
+    image: "/images/soja.jpg",
+    isOrganic: true,
+    delivery: true
   },
-  { 
-    id: 3, 
-    name: 'Ferme Kpomassè', 
-    region: 'Collines', 
-    crop: 'Igname', 
-    qty: '1.2 tonnes', 
-    date: '30/06', 
-    score: 4.2, 
-    price: '800 FCFA/kg',
-    icon: Flower2,
-    iconColor: 'from-orange-500 to-amber-500',
-    trend: '+5%'
+  {
+    id: 3,
+    title: "Tomate fraîche",
+    category: "Maraîchage",
+    price: 15000,
+    unit: "caisse",
+    quantity: 50,
+    location: "Atlantique",
+    farmer: "Paul Dossou",
+    rating: 4.7,
+    reviews: 32,
+    image: "/images/tomate.jpg",
+    isOrganic: false,
+    delivery: true
   },
-  { 
-    id: 4, 
-    name: 'Coopérative Agbanga', 
-    region: 'Zou', 
-    crop: 'Manioc', 
-    qty: '3 tonnes', 
-    date: '10/07', 
-    score: 4.9, 
-    price: '350 FCFA/kg',
-    icon: Leaf,
-    iconColor: 'from-green-500 to-emerald-500',
-    trend: '+15%'
+  {
+    id: 4,
+    title: "Manioc premium",
+    category: "Tubercules",
+    price: 20000,
+    unit: "tonne",
+    quantity: 8,
+    location: "Borgou",
+    farmer: "Fatou Saka",
+    rating: 4.9,
+    reviews: 15,
+    image: "/images/manioc.jpg",
+    isOrganic: true,
+    delivery: true
   },
-  { 
-    id: 5, 
-    name: 'Ferme Bio-Savè', 
-    region: 'Collines', 
-    crop: 'Anacarde', 
-    qty: '800 kg', 
-    date: '25/07', 
-    score: 4.6, 
-    price: '1200 FCFA/kg',
-    icon: Nut,
-    iconColor: 'from-amber-500 to-orange-500',
-    trend: '+20%'
+  {
+    id: 5,
+    title: "Piment rouge",
+    category: "Épices",
+    price: 8000,
+    unit: "kg",
+    quantity: 100,
+    location: "Mono",
+    farmer: "Koffi Akoué",
+    rating: 4.6,
+    reviews: 22,
+    image: "/images/piment.jpg",
+    isOrganic: true,
+    delivery: true
   },
+  {
+    id: 6,
+    title: "Riz local",
+    category: "Céréales",
+    price: 18000,
+    unit: "sac",
+    quantity: 20,
+    location: "Ouémé",
+    farmer: "Amina Bello",
+    rating: 4.8,
+    reviews: 28,
+    image: "/images/riz.jpg",
+    isOrganic: false,
+    delivery: true
+  }
 ];
 
-const containerVariants = {
-  hidden: { opacity: 0 },
-  visible: {
-    opacity: 1,
-    transition: {
-      staggerChildren: 0.08
-    }
-  }
-};
+const OffersList = ({ selectedCrop, selectedRegion }) => {
+  const [offers, setOffers] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [likedOffers, setLikedOffers] = useState([]);
+  const [currentPage, setCurrentPage] = useState(0);
+  const itemsPerPage = 3;
 
-const itemVariants = {
-  hidden: { x: -20, opacity: 0 },
-  visible: { x: 0, opacity: 1 }
-};
+  useEffect(() => {
+    setTimeout(() => {
+      setOffers(mockOffers);
+      setLoading(false);
+    }, 500);
+  }, []);
 
-export default function OffersList({ selectedCrop, selectedRegion }) {
-  const filtered = offers.filter(o => 
-    (selectedCrop === 'all' || o.crop === selectedCrop) &&
-    (selectedRegion === 'all' || o.region === selectedRegion)
+  const filteredOffers = offers.filter(offer => {
+    if (selectedCrop !== 'all' && !offer.title.toLowerCase().includes(selectedCrop.toLowerCase())) return false;
+    if (selectedRegion !== 'all' && offer.location !== selectedRegion) return false;
+    return true;
+  });
+
+  const pageCount = Math.ceil(filteredOffers.length / itemsPerPage);
+  const paginatedOffers = filteredOffers.slice(
+    currentPage * itemsPerPage,
+    (currentPage + 1) * itemsPerPage
   );
 
-  if (filtered.length === 0) {
+  const toggleLike = (id) => {
+    setLikedOffers(prev => 
+      prev.includes(id) ? prev.filter(i => i !== id) : [...prev, id]
+    );
+  };
+
+  if (loading) {
     return (
-      <div className="bg-white dark:bg-gray-800 rounded-xl p-8 text-center border border-gray-200 dark:border-gray-700">
-        <p className="text-gray-500 dark:text-gray-400">Aucune offre ne correspond à vos filtres.</p>
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        {[1, 2, 3].map((i) => (
+          <div key={i} className="bg-white dark:bg-gray-800 rounded-2xl overflow-hidden shadow-sm animate-pulse">
+            <div className="h-48 bg-gray-200 dark:bg-gray-700"></div>
+            <div className="p-5 space-y-3">
+              <div className="h-5 bg-gray-200 dark:bg-gray-700 rounded w-3/4"></div>
+              <div className="h-4 bg-gray-200 dark:bg-gray-700 rounded w-1/2"></div>
+              <div className="h-10 bg-gray-200 dark:bg-gray-700 rounded"></div>
+            </div>
+          </div>
+        ))}
+      </div>
+    );
+  }
+
+  if (filteredOffers.length === 0) {
+    return (
+      <div className="text-center py-12">
+        <Package className="w-16 h-16 text-gray-400 mx-auto mb-4" />
+        <h3 className="text-lg font-medium text-gray-900 dark:text-white mb-2">Aucune offre trouvée</h3>
+        <p className="text-gray-500 dark:text-gray-400">Aucune offre ne correspond à vos critères</p>
       </div>
     );
   }
 
   return (
     <div>
-      {/* En-tête avec icône pro */}
-      <div className="flex justify-between items-center mb-4">
-        <div className="flex items-center gap-2">
-          <Package className="w-5 h-5 text-green-600 dark:text-green-400" />
-          <h2 className="text-xl font-bold text-gray-900 dark:text-white">
-            Offres de récoltes futures
-          </h2>
-        </div>
-        <span className="text-sm text-gray-500 dark:text-gray-400 bg-gray-100 dark:bg-gray-800 px-3 py-1 rounded-full">
-          {filtered.length} offres
-        </span>
-      </div>
-
-      <motion.div
-        variants={containerVariants}
-        initial="hidden"
-        animate="visible"
-        className="space-y-3"
-      >
-        {filtered.map((offer) => {
-          const Icon = offer.icon;
-          return (
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        <AnimatePresence mode="wait">
+          {paginatedOffers.map((offer, index) => (
             <motion.div
               key={offer.id}
-              variants={itemVariants}
-              whileHover={{ x: 4 }}
-              className="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 hover:border-green-300 dark:hover:border-green-700 hover:shadow-md transition-all duration-200"
+              initial={{ opacity: 0, y: 30 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, scale: 0.9 }}
+              transition={{ duration: 0.4, delay: index * 0.1 }}
+              whileHover={{ y: -8 }}
+              className="group relative bg-white dark:bg-gray-800 rounded-2xl overflow-hidden shadow-sm hover:shadow-2xl transition-all duration-300 border border-gray-100 dark:border-gray-700"
             >
-              <div className="p-4">
-                <div className="flex items-start justify-between gap-4 flex-wrap">
-                  
-                  {/* Icône professionnelle à gauche */}
-                  <div className="flex items-start gap-3 flex-1 min-w-0">
-                    <div className={`w-12 h-12 rounded-xl bg-gradient-to-br ${offer.iconColor} flex items-center justify-center shadow-md shrink-0`}>
-                      <Icon className="w-6 h-6 text-white" />
-                    </div>
-                    
-                    <div className="flex-1 min-w-0">
-                      <div className="flex items-center gap-2 flex-wrap">
-                        <h3 className="font-bold text-gray-900 dark:text-white">
-                          {offer.name}
-                        </h3>
-                        <span className="inline-flex items-center gap-1 text-xs bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-400 px-2 py-0.5 rounded-full">
-                          <Star className="w-3 h-3 fill-current" />
-                          {offer.score}
-                        </span>
-                        <span className="inline-flex items-center gap-1 text-xs bg-blue-100 dark:bg-blue-900/30 text-blue-700 dark:text-blue-400 px-2 py-0.5 rounded-full">
-                          <TrendingUp className="w-3 h-3" />
-                          {offer.trend}
-                        </span>
-                      </div>
-                      
-                      <p className="text-sm text-gray-600 dark:text-gray-300 mt-1">
-                        {offer.crop} – {offer.qty}
-                      </p>
-                      
-                      <div className="flex items-center gap-3 mt-2 text-xs text-gray-500 dark:text-gray-400">
-                        <span className="inline-flex items-center gap-1">
-                          <MapPin className="w-3 h-3" />
-                          {offer.region}
-                        </span>
-                        <span className="inline-flex items-center gap-1">
-                          <Calendar className="w-3 h-3" />
-                          disponible {offer.date}
-                        </span>
-                      </div>
-                    </div>
-                  </div>
-                  
-                  <div className="text-right shrink-0">
-                    <div className="text-xl font-bold text-green-600 dark:text-green-400">
-                      {offer.price}
-                    </div>
-                    <button className="mt-2 bg-gradient-to-r from-green-600 to-emerald-600 text-white px-4 py-1.5 rounded-lg text-sm font-medium hover:from-green-700 hover:to-emerald-700 transition shadow-sm">
-                      Faire offre →
-                    </button>
-                  </div>
+              {/* Badge Bio */}
+              {offer.isOrganic && (
+                <div className="absolute top-3 left-3 z-10 bg-green-500 text-white text-xs font-semibold px-2 py-1 rounded-full flex items-center gap-1">
+                  <Leaf className="w-3 h-3" />
+                  Bio
+                </div>
+              )}
+              
+              {/* Image */}
+              <div className="relative h-48 overflow-hidden bg-gray-100 dark:bg-gray-700">
+                <img
+                  src={offer.image}
+                  alt={offer.title}
+                  className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
+                />
+                <div className="absolute inset-0 bg-gradient-to-t from-black/50 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+                
+                {/* Actions rapides */}
+                <div className="absolute top-3 right-3 flex gap-2 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+                  <button
+                    onClick={() => toggleLike(offer.id)}
+                    className="p-2 bg-white/90 backdrop-blur-sm rounded-full hover:bg-white transition-colors"
+                  >
+                    <Heart className={`w-4 h-4 ${likedOffers.includes(offer.id) ? 'fill-red-500 text-red-500' : 'text-gray-600'}`} />
+                  </button>
+                  <button className="p-2 bg-white/90 backdrop-blur-sm rounded-full hover:bg-white transition-colors">
+                    <Share2 className="w-4 h-4 text-gray-600" />
+                  </button>
                 </div>
               </div>
+              
+              {/* Contenu */}
+              <div className="p-5">
+                <div className="flex items-start justify-between mb-2">
+                  <div>
+                    <span className="text-xs text-gray-500 dark:text-gray-400 uppercase tracking-wider">
+                      {offer.category}
+                    </span>
+                    <h3 className="text-lg font-bold text-gray-900 dark:text-white mt-1">
+                      {offer.title}
+                    </h3>
+                  </div>
+                  <div className="flex items-center gap-1">
+                    <Star className="w-4 h-4 fill-yellow-400 text-yellow-400" />
+                    <span className="text-sm font-semibold text-gray-900 dark:text-white">{offer.rating}</span>
+                    <span className="text-xs text-gray-500">({offer.reviews})</span>
+                  </div>
+                </div>
+                
+                {/* Informations */}
+                <div className="space-y-2 mt-3">
+                  <div className="flex items-center gap-2 text-sm text-gray-600 dark:text-gray-400">
+                    <MapPin className="w-4 h-4" />
+                    <span>{offer.location}</span>
+                  </div>
+                  <div className="flex items-center gap-2 text-sm text-gray-600 dark:text-gray-400">
+                    <Package className="w-4 h-4" />
+                    <span>{offer.quantity} {offer.unit}(s) disponibles</span>
+                  </div>
+                </div>
+                
+                {/* Prix */}
+                <div className="mt-4 pt-3 border-t border-gray-100 dark:border-gray-700">
+                  <div className="flex items-baseline justify-between">
+                    <div>
+                      <span className="text-2xl font-bold text-green-600 dark:text-green-400">
+                        {offer.price.toLocaleString()} FCFA
+                      </span>
+                      <span className="text-xs text-gray-500">/{offer.unit}</span>
+                    </div>
+                    <div className="flex items-center gap-1">
+                      <Truck className="w-4 h-4 text-gray-400" />
+                      <span className="text-xs text-gray-500">Livraison</span>
+                    </div>
+                  </div>
+                </div>
+                
+                {/* Bouton commander */}
+                <button className="w-full mt-4 bg-gradient-to-r from-green-600 to-emerald-600 text-white py-2.5 rounded-xl font-medium hover:shadow-lg transition-all duration-300 flex items-center justify-center gap-2 group">
+                  <ShoppingBag className="w-4 h-4" />
+                  Commander
+                  <ArrowRight className="w-4 h-4 opacity-0 group-hover:opacity-100 group-hover:translate-x-1 transition-all" />
+                </button>
+              </div>
             </motion.div>
-          );
-        })}
-      </motion.div>
+          ))}
+        </AnimatePresence>
+      </div>
+      
+      {/* Pagination */}
+      {pageCount > 1 && (
+        <div className="flex justify-center items-center gap-2 mt-8">
+          <button
+            onClick={() => setCurrentPage(prev => Math.max(0, prev - 1))}
+            disabled={currentPage === 0}
+            className="p-2 rounded-lg border border-gray-200 dark:border-gray-700 disabled:opacity-50 disabled:cursor-not-allowed hover:bg-gray-50 dark:hover:bg-gray-800 transition"
+          >
+            <ChevronLeft className="w-5 h-5" />
+          </button>
+          
+          <div className="flex gap-1">
+            {Array.from({ length: pageCount }).map((_, idx) => (
+              <button
+                key={idx}
+                onClick={() => setCurrentPage(idx)}
+                className={`w-8 h-8 rounded-lg text-sm font-medium transition ${
+                  currentPage === idx
+                    ? 'bg-green-600 text-white'
+                    : 'text-gray-600 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-800'
+                }`}
+              >
+                {idx + 1}
+              </button>
+            ))}
+          </div>
+          
+          <button
+            onClick={() => setCurrentPage(prev => Math.min(pageCount - 1, prev + 1))}
+            disabled={currentPage === pageCount - 1}
+            className="p-2 rounded-lg border border-gray-200 dark:border-gray-700 disabled:opacity-50 disabled:cursor-not-allowed hover:bg-gray-50 dark:hover:bg-gray-800 transition"
+          >
+            <ChevronRight className="w-5 h-5" />
+          </button>
+        </div>
+      )}
     </div>
   );
-}
+};
+
+export default OffersList;

@@ -1,285 +1,303 @@
-import { motion, useInView } from 'framer-motion';
+import { motion, useScroll, useTransform } from 'framer-motion';
 import { useRef } from 'react';
-import { Leaf, Users, Handshake, Shield, Target, Heart, Quote, Sparkles } from 'lucide-react';
+import { 
+  Leaf, Users, Target, Heart, 
+  Globe, TrendingUp, Shield, 
+  CheckCircle, Zap, Star, Rocket,
+  Quote, Compass
+} from 'lucide-react';
+import { Link } from 'react-router-dom';
 
 export default function APropos() {
-  const missionRef = useRef(null);
-  const histoireRef = useRef(null);
-  const valeursRef = useRef(null);
-  const chiffresRef = useRef(null);
+  const containerRef = useRef(null);
   
-  const isMissionInView = useInView(missionRef, { once: true, margin: "-100px" });
-  const isHistoireInView = useInView(histoireRef, { once: true, margin: "-100px" });
-  const isValeursInView = useInView(valeursRef, { once: true, margin: "-100px" });
-  const isChiffresInView = useInView(chiffresRef, { once: true, margin: "-100px" });
-
-  const values = [
-    {
-      icon: Leaf,
-      title: 'Agriculture Durable',
-      description: 'Nous promouvons des pratiques agricoles respectueuses de l\'environnement.',
-      color: 'from-green-500 to-emerald-500',
-      delay: 0
-    },
-    {
-      icon: Users,
-      title: 'Communauté',
-      description: 'Une plateforme qui connecte agriculteurs et acheteurs locaux.',
-      color: 'from-blue-500 to-cyan-500',
-      delay: 0.1
-    },
-    {
-      icon: Handshake,
-      title: 'Confiance',
-      description: 'Système de réputation et certifications pour des transactions sécurisées.',
-      color: 'from-purple-500 to-pink-500',
-      delay: 0.2
-    },
-    {
-      icon: Shield,
-      title: 'Sécurité',
-      description: 'Paiement sécurisé avec escrow et livraison certifiée.',
-      color: 'from-orange-500 to-amber-500',
-      delay: 0.3
-    },
-    {
-      icon: Target,
-      title: 'Impact',
-      description: 'Améliorer les revenus des agriculteurs et l\'accès aux produits frais.',
-      color: 'from-red-500 to-rose-500',
-      delay: 0.4
-    },
-    {
-      icon: Heart,
-      title: 'Engagement',
-      description: 'Une agriculture plus juste et durable pour tous.',
-      color: 'from-pink-500 to-rose-500',
-      delay: 0.5
-    }
-  ];
+  const { scrollYProgress } = useScroll({
+    target: containerRef,
+    offset: ["start start", "end end"]
+  });
+  
+  const heroY = useTransform(scrollYProgress, [0, 0.5], [0, 150]);
 
   const stats = [
-    { value: '500+', label: 'Agriculteurs actifs', delay: 0 },
-    { value: '89+', label: 'Acheteurs vérifiés', delay: 0.1 },
-    { value: '12M', label: 'FCFA investis', delay: 0.2 },
-    { value: '98%', label: 'Livraisons réussies', delay: 0.3 }
+    { value: "5 000+", label: "Agriculteurs", gradient: "from-emerald-500 to-teal-500", delay: 0 },
+    { value: "50M+", label: "FCFA distribués", gradient: "from-blue-500 to-cyan-500", delay: 0.1 },
+    { value: "98%", label: "Satisfaction", gradient: "from-yellow-500 to-amber-500", delay: 0.2 },
+    { value: "77", label: "Communes", gradient: "from-purple-500 to-pink-500", delay: 0.3 },
+  ];
+
+  const valeurs = [
+    { title: "Innovation", description: "Des solutions technologiques adaptées aux réalités agricoles" },
+    { title: "Confiance", description: "Relations transparentes et durables avec nos partenaires" },
+    { title: "Impact", description: "Création de valeur pour les communautés rurales" },
+    { title: "Solidarité", description: "Une communauté qui s'entraide et partage" },
+  ];
+
+  const equipe = [
+    { nom: "Jean Adjanohoun", role: "CEO & Fondateur", description: "20 ans d'expérience" },
+    { nom: "Marie Soglo", role: "Directrice Agriculture", description: "Experte en agronomie" },
+    { nom: "Paul Dossou", role: "CTO", description: "Expert en solutions digitales" },
+    { nom: "Amina Bello", role: "Relations Agriculteurs", description: "Liaison avec les coopératives" },
+  ];
+
+  const timeline = [
+    { year: "2021", title: "Création", description: "Naissance d'AgroTrust" },
+    { year: "2022", title: "Lancement", description: "Plateforme opérationnelle" },
+    { year: "2023", title: "Expansion", description: "77 communes couvertes" },
+    { year: "2024", title: "Impact", description: "50M FCFA distribués" },
   ];
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-gray-50 via-white to-gray-50 dark:from-gray-900 dark:via-gray-900 dark:to-gray-800">
-      {/* Hero section avec nouvelle image */}
-      <div className="relative h-[320px] md:h-[380px] overflow-hidden">
-        <div 
-          className="absolute inset-0 bg-cover bg-center bg-fixed"
-          style={{
-            backgroundImage: "url('/images/agri2.jpg')",
-          }}
+    <div ref={containerRef} className="min-h-screen bg-gradient-to-br from-gray-50 via-white to-gray-50 dark:from-gray-900 dark:via-gray-900 dark:to-gray-800">
+      
+      {/* Hero Section */}
+      <div className="relative h-screen overflow-hidden bg-gradient-to-br from-emerald-900 to-teal-800">
+        <div className="absolute inset-0 bg-black/30"></div>
+        
+        <motion.div 
+          style={{ y: heroY }}
+          className="absolute inset-0"
         >
-          <div className="absolute inset-0 bg-gradient-to-b from-black/70 via-black/50 to-black/80"></div>
-        </div>
-
-        {/* Effet de particules */}
-        <div className="absolute inset-0 overflow-hidden">
-          {[...Array(20)].map((_, i) => (
-            <motion.div
-              key={i}
-              className="absolute w-1 h-1 bg-white/20 rounded-full"
-              initial={{ opacity: 0, scale: 0 }}
-              animate={{ 
-                opacity: [0, 1, 0],
-                scale: [0, 1, 0],
-                y: [0, -100],
-                x: [0, (Math.random() - 0.5) * 100]
-              }}
-              transition={{
-                duration: 3,
-                delay: i * 0.2,
-                repeat: Infinity,
-                repeatDelay: Math.random() * 5
-              }}
-              style={{
-                left: `${Math.random() * 100}%`,
-                top: `${Math.random() * 100}%`,
-              }}
-            />
-          ))}
-        </div>
-
-        <div className="relative z-10 h-full flex items-center justify-center text-center">
-          <div className="max-w-4xl mx-auto px-4">
+          <div className="absolute top-20 left-10 w-72 h-72 bg-emerald-500 rounded-full blur-3xl opacity-20"></div>
+          <div className="absolute bottom-20 right-10 w-96 h-96 bg-teal-500 rounded-full blur-3xl opacity-20"></div>
+        </motion.div>
+        
+        <div className="relative h-full flex items-center justify-center">
+          <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
             <motion.div
               initial={{ opacity: 0, y: 30 }}
               animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.8, ease: "easeOut" }}
+              className="inline-flex items-center gap-2 bg-white/10 backdrop-blur-md px-4 py-2 rounded-full mb-6"
             >
-              <motion.div 
-                initial={{ scale: 0 }}
-                animate={{ scale: 1 }}
-                transition={{ delay: 0.2, type: "spring", stiffness: 200 }}
-                className="inline-flex items-center gap-2 bg-white/10 backdrop-blur-md px-4 py-2 rounded-full mb-6"
-              >
-                <Sparkles className="w-4 h-4 text-yellow-400" />
-                <span className="text-sm text-white/90">Bienvenue chez Glégbé</span>
-              </motion.div>
-              
-              <motion.h1 
-                initial={{ y: 50, opacity: 0 }}
-                animate={{ y: 0, opacity: 1 }}
-                transition={{ delay: 0.3, duration: 0.6 }}
-                className="text-4xl md:text-5xl lg:text-6xl font-bold text-white mb-4"
-              >
-                À propos de <span className="text-transparent bg-clip-text bg-gradient-to-r from-green-400 to-emerald-400">Glégbé</span>
-              </motion.h1>
-              
-              <motion.p 
-                initial={{ y: 50, opacity: 0 }}
-                animate={{ y: 0, opacity: 1 }}
-                transition={{ delay: 0.4, duration: 0.6 }}
-                className="text-lg md:text-xl text-white/90 max-w-2xl mx-auto"
-              >
-                La première bourse agricole communautaire qui connecte directement les agriculteurs aux acheteurs
-              </motion.p>
+              <Leaf className="w-4 h-4 text-emerald-300" />
+              <span className="text-sm text-white">Plateforme agricole certifiée</span>
+            </motion.div>
+            
+            <motion.h1
+              initial={{ opacity: 0, y: 30 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.1 }}
+              className="text-5xl md:text-7xl font-bold text-white mb-6"
+            >
+              Révolutionnons
+              <br />
+              <span className="text-transparent bg-clip-text bg-gradient-to-r from-emerald-400 to-teal-400">
+                l'agriculture
+              </span>
+            </motion.h1>
+            
+            <motion.p
+              initial={{ opacity: 0, y: 30 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.2 }}
+              className="text-xl text-gray-200 max-w-2xl mx-auto mb-8"
+            >
+              AgroTrust connecte les agriculteurs béninois aux marchés, au micro-crédit et aux formations.
+            </motion.p>
+            
+            <motion.div
+              initial={{ opacity: 0, y: 30 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.3 }}
+              className="flex flex-wrap justify-center gap-4"
+            >
+              <Link to="/contact" className="px-8 py-3 bg-white text-emerald-700 rounded-xl font-semibold hover:shadow-lg transition">
+                Nous contacter
+              </Link>
+              <Link to="/register" className="px-8 py-3 bg-white/10 backdrop-blur-md text-white rounded-xl font-semibold hover:bg-white/20 transition">
+                Créer un compte
+              </Link>
             </motion.div>
           </div>
         </div>
-        
-        {/* Vague décorative en bas */}
-        <div className="absolute bottom-0 left-0 right-0">
-          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1440 120" className="w-full h-12">
-            <path fill="currentColor" fillOpacity="0.1" d="M0,64L80,69.3C160,75,320,85,480,80C640,75,800,53,960,48C1120,43,1280,53,1360,58.7L1440,64L1440,120L1360,120C1280,120,1120,120,960,120C800,120,640,120,480,120C320,120,160,120,80,120L0,120Z"></path>
-          </svg>
-        </div>
-      </div>
 
-      {/* Mission */}
-      <div ref={missionRef} className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
+        {/* Scroll indicator */}
         <motion.div
-          initial={{ opacity: 0, y: 50 }}
-          animate={isMissionInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 50 }}
-          transition={{ duration: 0.6 }}
-          className="bg-gradient-to-r from-green-600 to-emerald-600 rounded-2xl p-8 md:p-10 text-center shadow-xl"
+          animate={{ y: [0, 10, 0] }}
+          transition={{ duration: 1.5, repeat: Infinity }}
+          className="absolute bottom-8 left-1/2 transform -translate-x-1/2"
         >
-          <h2 className="text-2xl md:text-3xl font-bold text-white mb-4">Notre mission</h2>
-          <p className="text-base md:text-lg text-green-100 max-w-3xl mx-auto">
-            Transformer l'agriculture ouest-africaine en permettant aux agriculteurs de vendre leurs récoltes avant même de les planter, 
-            grâce à un système de paiement sécurisé et de mise en relation directe avec des acheteurs vérifiés.
-          </p>
+          <div className="w-6 h-10 border-2 border-white/30 rounded-full flex justify-center">
+            <div className="w-1 h-2 bg-white/50 rounded-full mt-2 animate-bounce"></div>
+          </div>
         </motion.div>
       </div>
 
-      {/* Histoire */}
-      <div ref={histoireRef} className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+      {/* Mission Section */}
+      <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-24">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
           <motion.div
-            initial={{ opacity: 0, x: -50 }}
-            animate={isHistoireInView ? { opacity: 1, x: 0 } : { opacity: 0, x: -50 }}
-            transition={{ duration: 0.6 }}
-            className="bg-white dark:bg-gray-800 rounded-2xl p-8 shadow-lg border border-gray-200 dark:border-gray-700 hover:shadow-xl transition-all duration-300"
+            initial={{ opacity: 0, x: -40 }}
+            whileInView={{ opacity: 1, x: 0 }}
+            viewport={{ once: true }}
           >
-            <h2 className="text-2xl md:text-3xl font-bold text-gray-900 dark:text-white mb-4">Notre histoire</h2>
-            <p className="text-gray-600 dark:text-gray-300 mb-4 leading-relaxed">
-              Glégbé est né d'un constat simple : les petits agriculteurs d'Afrique de l'Ouest n'ont pas accès aux marchés.
-              Ils dépendent d'intermédiaires qui fixent les prix après la récolte, les laissant dans une position de faiblesse.
+            <div className="inline-flex items-center gap-2 bg-emerald-100 dark:bg-emerald-900/30 px-3 py-1.5 rounded-full mb-4">
+              <Compass className="w-4 h-4 text-emerald-600" />
+              <span className="text-sm text-emerald-600">Notre mission</span>
+            </div>
+            <h2 className="text-4xl font-bold text-gray-900 dark:text-white mb-4">
+              Transformer l'agriculture au Bénin
+            </h2>
+            <p className="text-gray-600 dark:text-gray-400 mb-4 leading-relaxed">
+              AgroTrust est né d'une conviction : l'agriculture béninoise a un potentiel énorme qui reste sous-exploité 
+              faute d'accès aux marchés, au financement et à la formation.
             </p>
-            <p className="text-gray-600 dark:text-gray-300 mb-4 leading-relaxed">
-              Notre solution permet aux agriculteurs de publier leurs récoltes futures via USSD (sans internet),
-              et aux acheteurs de faire des offres en toute confiance grâce à notre système d'escrow.
+            <p className="text-gray-600 dark:text-gray-400 mb-6 leading-relaxed">
+              Notre plateforme connecte directement les agriculteurs aux acheteurs, élimine les intermédiaires, 
+              propose des micro-crédits adaptés et offre des formations pratiques.
             </p>
-            <p className="text-gray-600 dark:text-gray-300 leading-relaxed">
-              Aujourd'hui, Glégbé connecte des centaines d'agriculteurs et d'acheteurs à travers le Bénin,
-              avec pour ambition de s'étendre dans toute l'Afrique de l'Ouest.
-            </p>
+            <div className="flex flex-wrap gap-3">
+              {["100% Béninois", "Impact social", "Développement durable"].map((item, i) => (
+                <div key={i} className="flex items-center gap-2">
+                  <CheckCircle className="w-4 h-4 text-emerald-600" />
+                  <span className="text-sm text-gray-700 dark:text-gray-300">{item}</span>
+                </div>
+              ))}
+            </div>
           </motion.div>
-
+          
           <motion.div
-            initial={{ opacity: 0, x: 50 }}
-            animate={isHistoireInView ? { opacity: 1, x: 0 } : { opacity: 0, x: 50 }}
-            transition={{ duration: 0.6 }}
-            className="bg-gradient-to-br from-green-50 to-emerald-50 dark:from-green-950/30 dark:to-emerald-950/30 rounded-2xl p-8 text-center flex flex-col justify-center border border-green-200 dark:border-green-800 hover:scale-105 transition-transform duration-300"
+            initial={{ opacity: 0, x: 40 }}
+            whileInView={{ opacity: 1, x: 0 }}
+            viewport={{ once: true }}
+            className="bg-gradient-to-br from-emerald-500 to-teal-600 rounded-2xl p-8 text-white shadow-xl"
           >
-            <motion.div 
-              animate={{ rotate: [0, 10, -10, 0] }}
-              transition={{ duration: 2, repeat: Infinity }}
-              className="text-7xl mb-4"
-            >
-              🌱
-            </motion.div>
-            <p className="text-xl font-semibold text-gray-900 dark:text-white mb-2">"Du champ à la table, sans intermédiaire"</p>
-            <p className="text-gray-600 dark:text-gray-400">— Notre vision depuis 2025</p>
+            <Quote className="w-10 h-10 mb-4 opacity-80" />
+            <p className="text-xl italic mb-6">
+              "Faire du Bénin un leader de l'agriculture connectée en Afrique de l'Ouest"
+            </p>
+            <div className="pt-4 border-t border-white/20">
+              <p className="font-semibold">Jean Adjanohoun</p>
+              <p className="text-sm opacity-80">Fondateur & CEO</p>
+            </div>
           </motion.div>
         </div>
       </div>
 
-      {/* Nos valeurs */}
-      <div ref={valeursRef} className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
-        <motion.div
-          initial={{ opacity: 0, y: 30 }}
-          animate={isValeursInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 30 }}
-          transition={{ duration: 0.5 }}
-          className="text-center mb-8"
-        >
-          <h2 className="text-3xl md:text-4xl font-bold text-gray-900 dark:text-white mb-2">Nos valeurs</h2>
-          <div className="w-20 h-1 bg-gradient-to-r from-green-500 to-emerald-500 mx-auto rounded-full"></div>
-        </motion.div>
-
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {values.map((value, index) => {
-            const Icon = value.icon;
-            return (
-              <motion.div
-                key={index}
-                initial={{ opacity: 0, y: 30 }}
-                animate={isValeursInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 30 }}
-                transition={{ delay: value.delay, duration: 0.5 }}
-                whileHover={{ y: -8, scale: 1.02 }}
-                className="bg-white dark:bg-gray-800 rounded-2xl p-6 text-center shadow-lg border border-gray-200 dark:border-gray-700 hover:shadow-xl transition-all duration-300 group"
-              >
-                <motion.div 
-                  whileHover={{ rotate: 360 }}
-                  transition={{ duration: 0.5 }}
-                  className={`w-16 h-16 mx-auto rounded-2xl bg-gradient-to-r ${value.color} flex items-center justify-center mb-4 shadow-md group-hover:shadow-lg transition-all`}
-                >
-                  <Icon className="w-8 h-8 text-white" />
-                </motion.div>
-                <h3 className="text-lg font-bold text-gray-900 dark:text-white mb-2">{value.title}</h3>
-                <p className="text-sm text-gray-600 dark:text-gray-400">{value.description}</p>
-              </motion.div>
-            );
-          })}
-        </div>
-      </div>
-
-      {/* Chiffres clés */}
-      <div ref={chiffresRef} className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 pb-20">
-        <motion.div
-          initial={{ opacity: 0, y: 30 }}
-          animate={isChiffresInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 30 }}
-          transition={{ duration: 0.5 }}
-          className="bg-gradient-to-r from-green-600 to-emerald-600 rounded-2xl p-8 text-white shadow-xl"
-        >
-          <h2 className="text-2xl md:text-3xl font-bold text-center mb-8">Glégbé en chiffres</h2>
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+      {/* Stats Section */}
+      <div className="bg-gradient-to-r from-emerald-600 to-teal-600 py-20">
+        <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="text-center mb-10">
+            <h2 className="text-3xl font-bold text-white mb-2">Notre impact en chiffres</h2>
+            <p className="text-emerald-100">Des résultats concrets depuis notre lancement</p>
+          </div>
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-8">
             {stats.map((stat, index) => (
               <motion.div
                 key={index}
-                initial={{ scale: 0 }}
-                animate={isChiffresInView ? { scale: 1 } : { scale: 0 }}
-                transition={{ delay: stat.delay, type: "spring", stiffness: 200 }}
+                initial={{ opacity: 0, y: 20 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ delay: stat.delay }}
                 className="text-center"
               >
-                <motion.div 
-                  className="text-4xl md:text-5xl font-bold"
-                  initial={{ opacity: 0 }}
-                  animate={isChiffresInView ? { opacity: 1 } : { opacity: 0 }}
-                  transition={{ delay: stat.delay + 0.2 }}
-                >
-                  {stat.value}
-                </motion.div>
-                <p className="text-sm text-green-100 mt-1">{stat.label}</p>
+                <p className="text-4xl md:text-5xl font-bold text-white mb-1">{stat.value}</p>
+                <p className="text-emerald-100">{stat.label}</p>
               </motion.div>
             ))}
           </div>
-        </motion.div>
+        </div>
+      </div>
+
+      {/* Valeurs Section */}
+      <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-24">
+        <div className="text-center mb-12">
+          <div className="inline-flex items-center gap-2 bg-emerald-100 dark:bg-emerald-900/30 px-3 py-1.5 rounded-full mb-4">
+            <Heart className="w-4 h-4 text-emerald-600" />
+            <span className="text-sm text-emerald-600">Nos valeurs</span>
+          </div>
+          <h2 className="text-4xl font-bold text-gray-900 dark:text-white mb-3">Ce qui nous guide</h2>
+          <p className="text-gray-600 dark:text-gray-400">Des principes forts qui animent notre équipe</p>
+        </div>
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+          {valeurs.map((valeur, index) => (
+            <motion.div
+              key={index}
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ delay: index * 0.1 }}
+              className="bg-white dark:bg-gray-800 rounded-xl p-6 text-center shadow-lg border border-gray-100 dark:border-gray-700"
+            >
+              <h3 className="text-lg font-bold text-gray-900 dark:text-white mb-2">{valeur.title}</h3>
+              <p className="text-gray-600 dark:text-gray-400 text-sm">{valeur.description}</p>
+            </motion.div>
+          ))}
+        </div>
+      </div>
+
+      {/* Timeline */}
+      <div className="bg-gray-50 dark:bg-gray-800/50 py-20">
+        <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="text-center mb-10">
+            <h2 className="text-3xl font-bold text-gray-900 dark:text-white mb-2">Notre parcours</h2>
+            <p className="text-gray-600 dark:text-gray-400">Quelques dates clés</p>
+          </div>
+          <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
+            {timeline.map((item, index) => (
+              <motion.div
+                key={index}
+                initial={{ opacity: 0, y: 20 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ delay: index * 0.1 }}
+                className="text-center"
+              >
+                <div className="text-2xl font-bold text-emerald-600 mb-1">{item.year}</div>
+                <h3 className="font-semibold text-gray-900 dark:text-white mb-1">{item.title}</h3>
+                <p className="text-sm text-gray-600 dark:text-gray-400">{item.description}</p>
+              </motion.div>
+            ))}
+          </div>
+        </div>
+      </div>
+
+      {/* Équipe Section */}
+      <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-24">
+        <div className="text-center mb-12">
+          <div className="inline-flex items-center gap-2 bg-emerald-100 dark:bg-emerald-900/30 px-3 py-1.5 rounded-full mb-4">
+            <Users className="w-4 h-4 text-emerald-600" />
+            <span className="text-sm text-emerald-600">L'équipe</span>
+          </div>
+          <h2 className="text-4xl font-bold text-gray-900 dark:text-white mb-3">Une équipe passionnée</h2>
+          <p className="text-gray-600 dark:text-gray-400">Des experts au service des agriculteurs</p>
+        </div>
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+          {equipe.map((membre, index) => (
+            <motion.div
+              key={index}
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ delay: index * 0.1 }}
+              className="bg-white dark:bg-gray-800 rounded-xl p-6 text-center shadow-lg border border-gray-100 dark:border-gray-700"
+            >
+              <div className="w-20 h-20 bg-gradient-to-r from-emerald-500 to-teal-600 rounded-full flex items-center justify-center mx-auto mb-4 text-2xl text-white shadow-md">
+                {membre.nom.charAt(0)}
+              </div>
+              <h3 className="text-lg font-bold text-gray-900 dark:text-white mb-1">{membre.nom}</h3>
+              <p className="text-emerald-600 dark:text-emerald-400 text-sm mb-2">{membre.role}</p>
+              <p className="text-gray-500 dark:text-gray-400 text-xs">{membre.description}</p>
+            </motion.div>
+          ))}
+        </div>
+      </div>
+
+      {/* CTA Final */}
+      <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 pb-24">
+        <div className="bg-gradient-to-r from-emerald-600 to-teal-600 rounded-2xl p-10 text-center text-white">
+          <h3 className="text-2xl font-bold mb-3">Rejoignez l'aventure AgroTrust</h3>
+          <p className="text-emerald-100 mb-6 max-w-xl mx-auto">
+            Que vous soyez agriculteur, acheteur ou partenaire, il y a une place pour vous.
+          </p>
+          <div className="flex flex-wrap justify-center gap-4">
+            <Link to="/contact" className="px-6 py-2 bg-white text-emerald-700 rounded-lg font-semibold hover:shadow-lg transition">
+              Nous contacter
+            </Link>
+            <Link to="/register" className="px-6 py-2 bg-white/20 rounded-lg font-semibold hover:bg-white/30 transition">
+              Créer un compte
+            </Link>
+          </div>
+        </div>
       </div>
     </div>
   );
